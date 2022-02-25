@@ -97,6 +97,6 @@ module.exports = (server) => {
     socket.interval = setInterval(() => {
       socket.emit('dust', JSON.stringify(dust_result));
       socket.emit('meal', neis_result.toString());
-    }, 12000);
+    }, 3000);
   });
 };
