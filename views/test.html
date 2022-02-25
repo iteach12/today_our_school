@@ -9,30 +9,47 @@
   </head>
   <body>
     <main class="flex w-full h-full">
-      <header class="max-h-full w-1/6 bg-blue-500">
-        <div>
-          <h1>Hello, World!</h1>
-          <h2>Hello, World!</h2>
+      <header class="flex-col max-h-full w-1/5 bg-headercolor">
+        <div class="flex justify-center mt-12"><h1 class="text-white font-bold text-3xl">2022년 3월 2일 수요일</h1>
+        </div>
+        <div class="flex justify-center mt-6" >
+          <img src="../img/logo.png" alt="logo" class="w-36 h-32"></img>
+        </div>
+        <div class="flex-col mt-6">
+          <p style="text-align:center" class="text-white font-bold text-5xl">오늘도 행복한</p>
+          <p style="text-align:center" class="font-bold text-5xl text-[#F7B9B2]">서원초등학교</p>
+        </div>
+        <div class="flex  bg-white w-auto h-3/5 mt-14 mx-8">
+          <div><h1>
+            오늘의 날씨
+          </h1>
+          </div>
+          
         </div>
       </header>
-      <content>
-        <section>
-          <div class="w-10 h-10 bg-blue-500">
-            <h1>Section1</h1>
+      <content class="flex max-h-full w-4/5 p-16 bg-sectioncolor">
+        <section class="flex-col max-h-full w-2/3 mr-8">
+          <div class="h-1/2 bg-white p-8 mb-6">
+            <div class=""><h1>오늘 우리 학교는?</h1></div>
           </div>
-          <div class="w-10 h-10 bg-yellow-500">
-            <h1>Section2</h1>
+          <div class="flex justify-between w-full h-1/2">
+            <div class="w-1/2 max-h-full bg-blue-500 p-8 mr-8">
+              <div><h1>오늘의 급식</h1></div>
+            </div>
+            <div class="w-1/2 max-h-full bg-yellow-500 p-8">
+              <div><h1>오늘 우리들</h1></div>
+            </div>
           </div>
         </section>
-        <section>
-          <div class="w-10 h-10 bg-red-500">
-            <h1>Section3</h1>
+        <section class="flex-col max-h-full w-1/3">
+          <div class="h-1/3 mb-3 p-8 bg-white">
+            <div><h1>오늘의 배움</h1></div>
           </div>
-          <div class="w-10 h-10 bg-slate-500">
-            <h1>Section4</h1>
+          <div class="h-1/3 mb-3 p-8 bg-white">
+            <div><h1>오늘의 명언</h1></div>
           </div>
-          <div class="w-10 h-10 bg-teal-500">
-            <h1>Section5</h1>
+          <div class="h-1/3 p-8 bg-white">
+            <div><h1>지금 몇 시지?</h1></div>
           </div>
         </section>
       </content>
