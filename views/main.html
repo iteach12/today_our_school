@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Main</title>
+    <link rel="stylesheet" href="./styles/styles.css" />
+  </head>
+  <body>
+    <h1 class="text-blue-700 text-2xl">Hello</h1>
+    <h2>서원초등학교 미세먼지</h2>
+    <h3 class="text-blue-700 text-2xl" id="dust_info">서원초등학교 미세먼지</h3>
+    <h3 id="meal_info">서원초등학교 급식</h3>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io.connect('http://localhost:8005', {
+        path: '/socket.io',
+        transports: ['websocket'],
+      });
+      socket.on('dust', (data) => {
+        console.log(data);
+        document.querySelector('#dust_info').textContent = data;
+        socket.emit('reply', '클라이언트 작동중입니다.');
+      });
+      socket.on('meal', (data) => {
+        console.log(data);
+        document.querySelector('#meal_info').innerHTML = data;
+        socket.emit('reply', '클라이언트 작동중입니다.');
+      });
+    </script>
+  </body>
+</html>
