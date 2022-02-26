@@ -19,40 +19,126 @@
           <p style="text-align:center" class="text-white font-bold text-5xl mb-2">오늘도 행복한</p>
           <p style="text-align:center" class="font-bold text-5xl text-[#F7B9B2]">서원초등학교</p>
         </div>
-        <div class="flex  bg-white w-auto h-3/5 mt-14 mx-8">
-          <div><h1>
-            오늘의 날씨
-          </h1>
+        <div class="flex-col  bg-white w-auto h-3/5 mt-14 mx-8 p-8">
+          <div class="title_border"><h1 class="card_title_text">오늘의 날씨</h1></div>
+          <div class="flex justify-center mt-8">
+            <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_nMuEto.json"  background="transparent"  speed="1" loop autoplay class="w-44 h-44"></lottie-player>
           </div>
-          
+          <div class="flex justify-center mt-4">
+            <h1 class="font-bold text-2xl">오늘 하늘은 맑고 깨끗해요!</h1>
+          </div>
+          <div class="flex justify-center mt-8">
+            <table  style="border-collapse: separate;
+            border-spacing: 1px;
+            text-align: center;
+            line-height: 1.5;
+            border-top: 1px solid #ccc;
+            margin : 20px 10px;">
+              <tr>
+                <th scope="row" style="width: 170px;
+                padding: 10px;
+                font-weight: bold;
+                vertical-align: top;
+                border-bottom: 1px solid #ccc;" class="table_head_text">미세먼지</th>
+                
+                <td style="width: 250px;
+                padding: 10px;
+                vertical-align: top;
+                border-bottom: 1px solid #ccc;" align="center">보통 30cm</td>
+  
+                
+              </tr>
+              <tr>
+                <th scope="row" style="width: 170px;
+                padding: 10px;
+                font-weight: bold;
+                vertical-align: top;
+                border-bottom: 1px solid #ccc;" class="table_head_text">초미세먼지</th>
+                <td style="width: 250px;
+                padding: 10px;
+                vertical-align: top;
+                border-bottom: 1px solid #ccc;" align="center">보통 30ym</td>
+              </tr>
+              <tr>
+                <th scope="row" style="width: 170px;
+                padding: 10px;
+                font-weight: bold;
+                vertical-align: top;
+                border-bottom: 1px solid #ccc;" class="table_head_text">현재기온</th>
+                <td style="width: 250px;
+                padding: 10px;
+                vertical-align: top;
+                border-bottom: 1px solid #ccc;" align="center">-10</td>
+              </tr>
+              <tr>
+                <th scope="row" style="width: 170px;
+                padding: 10px;
+                font-weight: bold;
+                vertical-align: top;
+                border-bottom: 1px solid #ccc;" class="table_head_text">하늘상태</th>
+                <td style="width: 250px;
+                padding: 10px;
+                vertical-align: top;
+                border-bottom: 1px solid #ccc;" align="center">빗방울</td>
+              </tr>
+              <tr>
+                <th scope="row" style="width: 170px;
+                padding: 10px;
+                font-weight: bold;
+                vertical-align: top;
+                border-bottom: 1px solid #ccc;" align="center" class="table_head_text">강수량</th>
+                <td style="width: 250px;
+                padding: 10px;
+                vertical-align: top;
+                border-bottom: 1px solid #ccc;" align="center">25.2mm</td>
+              </tr>
+              
+            </table>
+          </div>
+          <div class="text-sm mt-8" align="left">
+            <h1>※ 데이터제공 : 환경부/한국환경공단 제공</h1>
+            <h1>※ 실시간 제공 데이터이므로 오류가 있을 수 있음.</h1>
+            <h1>※ 최종 업데이트: 22/03/04/ 12:35</h1>
+          </div>
         </div>
       </header>
-      <content class="flex max-h-full w-4/5 p-16 bg-sectioncolor">
-        <section class="flex-col max-h-full w-2/3 mr-8">
-          <div class="h-1/2 bg-white p-8 mb-6">
-            <div class=""><h1>오늘 우리 학교는?</h1></div>
-          </div>
-          <div class="flex justify-between w-full h-1/2">
-            <div class="w-1/2 max-h-full bg-blue-500 p-8 mr-8">
-              <div><h1>오늘의 급식</h1></div>
+      <content class="flex max-h-full space-x-4 w-4/5 p-16 bg-sectioncolor">
+        <section class="flex-col space-y-8 max-h-full w-2/3 static">
+          <div class="h-1/2 bg-white p-8 relative">
+            <div class="title_border"><h1 class="card_title_text">오늘 우리 학교는?</h1></div>
+            <div class="absolute  bottom-0 right-0">
+              <lottie-player src="https://assets1.lottiefiles.com/packages/lf20_K7aZUG.json"  background="transparent"  speed="1"   loop  autoplay style="width:450px; height:450px;"></lottie-player>
             </div>
-            <div class="w-1/2 max-h-full bg-yellow-500 p-8">
-              <div><h1>오늘 우리들</h1></div>
+          </div>
+          <div class="flex space-x-4 w-full h-1/2">
+            <div class="w-1/2 max-h-full bg-white p-8 relative">
+              <div class="title_border">
+                <h1 class="card_title_text">오늘의 급식</h1>
+              </div>
+              <div class="absolute bottom-0 right-0">
+                <lottie-player src="https://assets9.lottiefiles.com/private_files/lf30_rttpmsbc.json"  background="transparent"  speed="2"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
+
+              </div>
+            </div>
+            <div class="w-1/2 max-h-full bg-white p-8">
+              <div class="title_border"><h1 class="card_title_text">오늘 우리들</h1></div>
             </div>
           </div>
         </section>
-        <section class="flex-col justify-between h-full w-1/3">
-          <div class="h-1/3  p-8 bg-white">
-            <div><h1>오늘의 배움</h1></div>
-          </div>
-          <div class="h-1/3  p-8 bg-white">
-            <div><h1>오늘의 명언</h1></div>
+        <section class="flex-col space-y-4 h-full w-1/3">
+          <div class="h-1/3 p-8 bg-white">
+            <div class="title_border"><h1 class="card_title_text">오늘의 배움</h1></div>
           </div>
           <div class="h-1/3 p-8 bg-white">
-            <div><h1>지금 몇 시지?</h1></div>
+            <div class="title_border"><h1 class="card_title_text">오늘의 명언</h1></div>
+          </div>
+          <div class="h-1/3 p-8 bg-white">
+            <div class="title_border"><h1 class="card_title_text" >지금 몇 시지?</h1></div>
           </div>
         </section>
       </content>
     </main>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
   </body>
 </html>

@@ -7,3 +7,18 @@ html {
   width: 100vw;
   height: 100vh;
 }
+
+/* 타이틀 좌측 보더 세팅 */
+.title_border {
+  @apply border-l-8 border-l-headercolor pl-2;
+}
+
+/* 카드 타이틀 세팅 */
+.card_title_text {
+  @apply text-[#503C87] text-3xl font-bold;
+}
+
+/* 날씨현황표 디자인 */
+.table_head_text {
+  @apply text-xl font-bold;
+}
