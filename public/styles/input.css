@@ -15,7 +15,7 @@ html {
 
 /* 카드 타이틀 세팅 */
 .card_title_text {
-  @apply text-[#503C87] text-3xl font-bold;
+  @apply text-[#503C87] text-5xl font-bold;
 }
 
 /* 날씨현황표 디자인 */

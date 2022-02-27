@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../public/styles/styles.css" />
-    <title>Document</title>
+    <link rel="stylesheet" href="./styles/styles.css" />
+    <title>오늘 우리 학교는?</title>
   </head>
   <body>
     <main class="flex w-full h-full">
@@ -13,11 +13,11 @@
         <div class="flex justify-center mt-12"><h1 class="text-white font-bold text-3xl">2022년 3월 2일 수요일</h1>
         </div>
         <div class="flex justify-center mt-6" >
-          <img src="../img/logo.png" alt="logo" class="w-36 h-32"></img>
+          <img src="./img/logo.png" alt="logo" class="w-36 h-32"></img>
         </div>
         <div class="flex-col mt-6">
-          <p style="text-align:center" class="text-white font-bold text-5xl mb-2">오늘도 행복한</p>
-          <p style="text-align:center" class="font-bold text-5xl text-[#F7B9B2]">서원초등학교</p>
+          <p style="text-align:center" class="text-white font-bold text-6xl mb-2">오늘도 행복한</p>
+          <p style="text-align:center" class="font-bold text-6xl text-[#F7B9B2]">서원초등학교</p>
         </div>
         <div class="flex-col  bg-white w-auto h-3/5 mt-14 mx-8 p-8">
           <div class="title_border"><h1 class="card_title_text">오늘의 날씨</h1></div>
@@ -27,38 +27,52 @@
           <div class="flex justify-center mt-4">
             <h1 class="font-bold text-2xl">오늘 하늘은 맑고 깨끗해요!</h1>
           </div>
+          
           <div class="flex justify-center mt-8">
             <table  style="border-collapse: separate;
             border-spacing: 1px;
             text-align: center;
             line-height: 1.5;
             border-top: 1px solid #ccc;
-            margin : 20px 10px;">
+            margin : 20px 10px 1px 10px;">
               <tr>
-                <th scope="row" style="width: 170px;
+                <th  rowspan="2" scope="row" style="width: 170px;
                 padding: 10px;
                 font-weight: bold;
                 vertical-align: top;
-                border-bottom: 1px solid #ccc;" class="table_head_text">미세먼지</th>
+                border-bottom: 1px solid #ccc; vertical-align:middle;" class="table_head_text">미세먼지</th>
                 
-                <td style="width: 250px;
+                <td id="dust_mise_grade" style="width: 250px;
                 padding: 10px;
                 vertical-align: top;
-                border-bottom: 1px solid #ccc;" align="center">보통 30cm</td>
-  
-                
+                " align="center">보통 </td>
+
               </tr>
               <tr>
-                <th scope="row" style="width: 170px;
+                <td id="dust_mise" style="width: 250px;
+                padding: 10px;
+                vertical-align: top;
+                border-bottom: 1px solid #ccc;" align="center">30cm</td>
+              </tr>
+              <tr>
+                <th rowspan="2" scope="row" style="width: 170px;
                 padding: 10px;
                 font-weight: bold;
                 vertical-align: top;
-                border-bottom: 1px solid #ccc;" class="table_head_text">초미세먼지</th>
-                <td style="width: 250px;
+                border-bottom: 1px solid #ccc; vertical-align:middle;" class="table_head_text">초미세먼지</th>
+                <td id="dust_cho_mise_grade" style="width: 250px;
                 padding: 10px;
                 vertical-align: top;
-                border-bottom: 1px solid #ccc;" align="center">보통 30ym</td>
+                " align="center">보통 </td>
               </tr>
+              <tr>
+                <td id="dust_cho_mise" style="width: 250px;
+                padding: 10px;
+                vertical-align: top;
+                border-bottom: 1px solid #ccc;" align="center">30ym</td>
+              </tr>
+
+
               <tr>
                 <th scope="row" style="width: 170px;
                 padding: 10px;
@@ -95,11 +109,14 @@
               
             </table>
           </div>
-          <div class="text-sm mt-8" align="left">
-            <h1>※ 데이터제공 : 환경부/한국환경공단 제공</h1>
-            <h1>※ 실시간 제공 데이터이므로 오류가 있을 수 있음.</h1>
-            <h1>※ 최종 업데이트: 22/03/04/ 12:35</h1>
+          <div class="flex justify-end text-sm mt-2">
+            <h1>※ 업데이트: </h1>
+            <h1 id="update_time">22/03/04 12:45</h1>
           </div>
+        </div>
+        <div class="text-sm ml-8 mt-2 text-white" align="left">
+          <h1>※ 데이터제공 : 환경부/한국환경공단 제공</h1>
+          <h1>※ 실시간 제공 데이터이므로 오류가 있을 수 있음.</h1>
         </div>
       </header>
       <content class="flex max-h-full space-x-4 w-4/5 p-16 bg-sectioncolor">
@@ -115,6 +132,9 @@
               <div class="title_border">
                 <h1 class="card_title_text">오늘의 급식</h1>
               </div>
+              <div>
+                <ul id="meal_info" class="list-disc text-gray-900 text-3xl font-normal ml-8 mt-4"></ul>
+              </div>
               <div class="absolute bottom-0 right-0">
                 <lottie-player src="https://assets9.lottiefiles.com/private_files/lf30_rttpmsbc.json"  background="transparent"  speed="2"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
 
@@ -123,7 +143,7 @@
             <div class="w-1/2 max-h-full bg-white p-8 relative">
               <div class="title_border"><h1 class="card_title_text">오늘 우리들</h1></div>
               <div class="absolute bottom-0 right-0">
-                <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_pkanqwys.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
+                <lottie-player src="https://assets9.lottiefiles.com/private_files/lf30_nmraqqu5.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
               </div>
             </div>
           </div>
@@ -141,7 +161,72 @@
         </section>
       </content>
     </main>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script>
+      const socket = io.connect('http://localhost:8005', {
+        path: '/socket.io',
+        transports: ['websocket'],
+      });
+      socket.on('dust', (data) => {
+        const currentDustData = JSON.parse(data);
+        let pm10GradeText;
+        let pm25GradeText;
+        switch(currentDustData.pm10Grade1h){
+          case '1':
+            pm10GradeText = `좋음`;
+            break;
+          case '2':
+            pm10GradeText = `보통`;
+            break;
+          case '3':
+            pm10GradeText = `나쁨`;
+            break;
+          case '4':
+            pm10GradeText = `매우나쁨`;
+            break;
+        }
+        switch(currentDustData.pm25Grade1h){
+          case '1':
+            pm25GradeText = `좋음`;
+            break;
+          case '2':
+            pm25GradeText = `보통`;
+            break;
+          case '3':
+            pm25GradeText = `나쁨`;
+            break;
+          case '4':
+            pm25GradeText = `매우나쁨`;
+            break;
+        }
+        
+        document.querySelector('#dust_mise').textContent = `${currentDustData.pm10Value} ㎍/㎥`;
+        document.querySelector('#dust_mise_grade').textContent = `${pm10GradeText}`;
+        document.querySelector('#dust_cho_mise').textContent = `${currentDustData.pm25Value} ㎍/㎥`;
+        document.querySelector('#dust_cho_mise_grade').textContent = `${pm25GradeText}`;
+        document.querySelector('#update_time').textContent = `${currentDustData.dataTime}`;
 
+        socket.emit('reply', '클라이언트 작동중입니다.');
+      });
+      socket.on('meal', (data) => {
+        
+        const mealDataParse = data.replace(/<br\/>/gm, ' ');
+        const final_meal_data = mealDataParse.split(' ');
+        for (let i in final_meal_data) { 
+          
+          const li = document.createElement("li");
+          const textNode = document.createTextNode(final_meal_data[i]);
+          li.appendChild(textNode);
+          
+          document.getElementById('meal_info').appendChild(li);
+
+        }
+
+
+        
+        socket.emit('reply', '클라이언트 작동중입니다.');
+      });
+    </script>
   </body>
 </html>

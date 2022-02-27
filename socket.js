@@ -5,7 +5,7 @@ dotenv.config();
 
 const dust_url = `http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=${
   process.env.OPEN_KEY
-}&numOfRows=100&returnType=json&sidoName=${encodeURIComponent('강원')}`;
+}&numOfRows=100&returnType=json&ver=1.3&sidoName=${encodeURIComponent('강원')}`;
 
 let dust_result;
 
@@ -19,7 +19,6 @@ axios
     response.data.response.body.items.forEach((item, index, array) => {
       if (item.stationName == '지정면') {
         dust_result = item;
-        pm10Value = item.pm10Value;
       }
     });
     // console.log(`${mySchoolDust}`);
@@ -44,10 +43,10 @@ const today_date = `${year}${('00' + month.toString()).slice(-2)}${(
   '00' + day.toString()
 ).slice(-2)}`;
 
-console.log(`오늘은 ${today_date} 입니다.`);
-console.log(`연도는 ${year} 입니다.`);
-console.log(`달은 ${month} 입니다.`);
-console.log(`일은 ${day} 입니다.`);
+// console.log(`오늘은 ${today_date} 입니다.`);
+// console.log(`연도는 ${year} 입니다.`);
+// console.log(`달은 ${month} 입니다.`);
+// console.log(`일은 ${day} 입니다.`);
 
 //기본 호출 url 작성하기
 const basic_request_url = 'https://open.neis.go.kr/hub/mealServiceDietInfo?';
@@ -72,10 +71,13 @@ function parsing_json(obj) {
   return meal_data_str;
 }
 
-let neis_result;
-axios.get(url).then(async (res) => {
-  neis_result = parsing_json(res);
-});
+let neis_meal_info;
+
+const get_meal_info = () => {
+  axios.get(url).then(async (res) => {
+    neis_meal_info = parsing_json(res).toString();
+  });
+};
 
 module.exports = (server) => {
   const io = SocketIO(server, { path: '/socket.io' });
@@ -84,6 +86,8 @@ module.exports = (server) => {
     const req = socket.request;
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     console.log('새로운 클라이언트 접속!', ip, socket.id, req.ip);
+    get_meal_info();
+    socket.emit('meal', neis_meal_info);
     socket.on('disconnect', () => {
       console.log('클라이언트 접속 해제', ip, socket.id);
       clearInterval(socket.interval);
@@ -96,7 +100,6 @@ module.exports = (server) => {
     });
     socket.interval = setInterval(() => {
       socket.emit('dust', JSON.stringify(dust_result));
-      socket.emit('meal', neis_result.toString());
     }, 3000);
   });
 };
