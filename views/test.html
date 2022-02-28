@@ -209,9 +209,13 @@
 
         socket.emit('reply', '클라이언트 작동중입니다.');
       });
+      
+      let isWritten = false;
       socket.on('meal', (data) => {
         
-        const mealDataParse = data.replace(/<br\/>/gm, ' ');
+
+        if(!isWritten){
+          const mealDataParse = data.replace(/<br\/>/gm, ' ');
         const final_meal_data = mealDataParse.split(' ');
         for (let i in final_meal_data) { 
           
@@ -222,6 +226,9 @@
           document.getElementById('meal_info').appendChild(li);
 
         }
+        isWritten = true;
+        }
+        
 
 
         
