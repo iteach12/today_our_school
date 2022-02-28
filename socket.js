@@ -1,10 +1,12 @@
 const SocketIO = require('socket.io');
 const axios = require('axios').default;
 const dotenv = require('dotenv');
-
 dotenv.config();
-
-
+const {
+  today_qoute,
+  today_english,
+  today_phrase,
+} = require('./public/text/gongbu');
 
 const dust_url = `http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=${
   process.env.OPEN_KEY
@@ -89,9 +91,9 @@ module.exports = (server) => {
     const req = socket.request;
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     console.log('새로운 클라이언트 접속!', ip, socket.id, req.ip);
-    
+
     get_meal_info();
-    
+
     socket.on('disconnect', () => {
       console.log('클라이언트 접속 해제', ip, socket.id);
       clearInterval(socket.interval);
@@ -102,10 +104,18 @@ module.exports = (server) => {
     socket.on('reply', (data) => {
       console.log(data);
     });
-    
-    socket.interval = setInterval(() => {
+
+    socket.timeout = setTimeout(() => {
       socket.emit('dust', JSON.stringify(dust_result));
       socket.emit('meal', neis_meal_info);
+
+      socket.emit('gongbu', today_qoute);
     }, 3000);
+    // socket.interval = setInterval(() => {
+    //   socket.emit('dust', JSON.stringify(dust_result));
+    //   socket.emit('meal', neis_meal_info);
+
+    //   socket.emit('gongbu', today_qoute);
+    // }, 3000);
   });
 };

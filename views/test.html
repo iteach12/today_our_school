@@ -150,26 +150,42 @@
         </section>
         <section class="flex-col space-y-4 h-full w-1/3">
           <div class="h-1/3 p-8 bg-white">
-            <div class="title_border"><h1 class="card_title_text">오늘의 배움</h1></div>
+            <div class="title_border">
+              <h1 class="card_title_text">오늘의 배움</h1>
+            </div>
+            <div>
+              <p id="gongbu">
+
+              </p>
+            </div>
           </div>
           <div class="h-1/3 p-8 bg-white">
             <div class="title_border"><h1 class="card_title_text">오늘의 명언</h1></div>
           </div>
           <div class="h-1/3 p-8 bg-white">
             <div class="title_border"><h1 class="card_title_text" >지금 몇 시지?</h1></div>
+            <div class="flex justify-center max-w-full max-h-full">
+              <i class="fa-regular fa-clock"></i>
+              <p id="my_clock"></p>
+            </div>
           </div>
         </section>
       </content>
     </main>
+    
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script>
       
 
+      
+
+      
       const socket = io.connect('http://localhost:8005', {
         path: '/socket.io',
         transports: ['websocket'],
       });
+      
       socket.on('dust', (data) => {
         const currentDustData = JSON.parse(data);
         let pm10GradeText;
@@ -209,9 +225,14 @@
         document.querySelector('#dust_cho_mise_grade').textContent = `${pm25GradeText}`;
         document.querySelector('#update_time').textContent = `${currentDustData.dataTime}`;
 
-        socket.emit('reply', '클라이언트 작동중입니다.');
+        socket.emit('reply', '미세먼지 데이터 연결됨');
       });
-      
+      socket.on('gongbu', (data)=>{
+
+        
+        document.querySelector('#gongbu').textContent = `${data}`;
+        socket.emit('reply', '공부 데이터 연결됨.');
+      });
       let isWritten = false;
       socket.on('meal', (data) => {
         
@@ -234,12 +255,32 @@
 
 
         
-        socket.emit('reply', '클라이언트 작동중입니다.');
+        socket.emit('reply', '급식 정보연결됨');
       });
 
       
-      
+      const clock = document.querySelector('#my_clock');
+
+
+      function getTime(){
+          const time = new Date();
+          const hour = (time.getHours() > 12)? time.getHours()-12 : time.getHours();
+          const minutes = time.getMinutes();
+          const seconds = time.getSeconds();
+          //clock.innerHTML = hour +":" + minutes + ":"+seconds;
+          clock.innerHTML = `${hour<10 ? `0${hour}`:hour}시 ${minutes<10 ? `0${minutes}`:minutes}분 ${seconds<10 ? `0${seconds}`:seconds}초`;
+
+      }
+
+
+      function timerInit(){
+          setInterval(getTime, 1000);
+      }
+
+      timerInit();
+
 
     </script>
+    
   </body>
 </html>
