@@ -164,6 +164,8 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script>
+      
+
       const socket = io.connect('http://localhost:8005', {
         path: '/socket.io',
         transports: ['websocket'],
@@ -234,6 +236,10 @@
         
         socket.emit('reply', '클라이언트 작동중입니다.');
       });
+
+      
+      
+
     </script>
   </body>
 </html>

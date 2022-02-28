@@ -1,7 +1,10 @@
 const SocketIO = require('socket.io');
 const axios = require('axios').default;
 const dotenv = require('dotenv');
+
 dotenv.config();
+
+
 
 const dust_url = `http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=${
   process.env.OPEN_KEY
@@ -99,6 +102,7 @@ module.exports = (server) => {
     socket.on('reply', (data) => {
       console.log(data);
     });
+    
     socket.interval = setInterval(() => {
       socket.emit('dust', JSON.stringify(dust_result));
       socket.emit('meal', neis_meal_info);
