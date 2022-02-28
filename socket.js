@@ -86,8 +86,9 @@ module.exports = (server) => {
     const req = socket.request;
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     console.log('새로운 클라이언트 접속!', ip, socket.id, req.ip);
+    
     get_meal_info();
-    socket.emit('meal', neis_meal_info);
+    
     socket.on('disconnect', () => {
       console.log('클라이언트 접속 해제', ip, socket.id);
       clearInterval(socket.interval);
@@ -100,6 +101,7 @@ module.exports = (server) => {
     });
     socket.interval = setInterval(() => {
       socket.emit('dust', JSON.stringify(dust_result));
+      socket.emit('meal', neis_meal_info);
     }, 3000);
   });
 };
