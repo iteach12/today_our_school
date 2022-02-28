@@ -177,10 +177,6 @@
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script>
       
-
-      
-
-      
       const socket = io.connect('http://localhost:8005', {
         path: '/socket.io',
         transports: ['websocket'],
@@ -259,9 +255,11 @@
       });
 
       
+      //지금 몇 시지?
       const clock = document.querySelector('#my_clock');
-
-
+      //현재 시각 가져오기
+      //12시 이후라면 -12해서 1시로 표현하기. (12시간제)
+      //시 자리가 한 자리라면 0을 붙여서 자리수 맞추기.
       function getTime(){
           const time = new Date();
           const hour = (time.getHours() > 12)? time.getHours()-12 : time.getHours();
@@ -271,12 +269,11 @@
           clock.innerHTML = `${hour<10 ? `0${hour}`:hour}시 ${minutes<10 ? `0${minutes}`:minutes}분 ${seconds<10 ? `0${seconds}`:seconds}초`;
 
       }
-
-
+      
+      //인터벌 생성. 1초마다 반복
       function timerInit(){
           setInterval(getTime, 1000);
       }
-
       timerInit();
 
 
