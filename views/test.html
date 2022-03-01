@@ -162,11 +162,15 @@
           <div class="h-1/3 p-8 bg-white">
             <div class="title_border"><h1 class="card_title_text">오늘의 명언</h1></div>
           </div>
-          <div class="h-1/3 p-8 bg-white">
-            <div class="title_border"><h1 class="card_title_text" >지금 몇 시지?</h1></div>
-            <div class="flex justify-center max-w-full max-h-full">
-              <i class="fa-regular fa-clock"></i>
-              <p id="my_clock"></p>
+          <div class="h-1/3 pt-8 pr-8 pl-8 bg-white relative">
+            <div class="title_border">
+              <h1 class="card_title_text" >지금 몇 시지?</h1>
+            </div>
+            <img src="./img/alarm-clock.png" alt="clock" class="w-20 h-20 absolute top-3 right-52"></img>
+            <div class="flex justify-center h-5/6 w-full items-center" >
+             
+              <p id="my_clock" class="text-5xl"></p>
+              <p></p>
             </div>
           </div>
         </section>
@@ -266,7 +270,7 @@
           const minutes = time.getMinutes();
           const seconds = time.getSeconds();
           //clock.innerHTML = hour +":" + minutes + ":"+seconds;
-          clock.innerHTML = `${hour<10 ? `0${hour}`:hour}시 ${minutes<10 ? `0${minutes}`:minutes}분 ${seconds<10 ? `0${seconds}`:seconds}초`;
+          clock.textContent = `${hour}시 ${minutes<10 ? `0${minutes}`:minutes}분 ${seconds<10 ? `0${seconds}`:seconds}초`;
 
       }
       
