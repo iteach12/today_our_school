@@ -160,7 +160,14 @@
             </div>
           </div>
           <div class="h-1/3 p-8 bg-white">
-            <div class="title_border"><h1 class="card_title_text">오늘의 명언</h1></div>
+            <div class="title_border">
+              <h1 class="card_title_text">오늘의 명언</h1>
+            </div>
+            <div>
+              <p id="quote">
+
+              </p>
+            </div>
           </div>
           <div class="h-1/3 pt-8 pr-8 pl-8 bg-white relative">
             <div class="title_border">
@@ -227,12 +234,7 @@
 
         socket.emit('reply', '미세먼지 데이터 연결됨');
       });
-      socket.on('gongbu', (data)=>{
-
-        
-        document.querySelector('#gongbu').textContent = `${data}`;
-        socket.emit('reply', '공부 데이터 연결됨.');
-      });
+     
       let isWritten = false;
       socket.on('meal', (data) => {
         
@@ -280,6 +282,32 @@
       }
       timerInit();
 
+      //텍스트파일 불러오기
+      //영어, 사자성어, 명언
+      
+      
+      // getContentFromTxt('./text/english_word.txt');      
+      document.querySelector('#quote').textContent = `${getContentFromTxt('./text/quote.txt')}`;
+      document.querySelector('#gongbu').textContent = `${getContentFromTxt('./text/phrase.txt')}`;
+      function getContentFromTxt(url){
+      let content = null;
+      let result_array;
+      let xmlhttp = new XMLHttpRequest();
+      xmlhttp.open('GET', url, false);
+      xmlhttp.send();
+      //파일 로드 성공 시 파일에서 읽은 텍스트를 content에 담음
+      if (xmlhttp.status == 200) {
+        content = xmlhttp.responseText;
+        result_array = content.split('\n');
+      }
+      return result_array[Math.floor(Math.random() * result_array.length)];
+      }
+      
+      function separateStringWithAsterisk(dataString){
+        //공부 어레이 *로 잘라서 넣기.
+        
+      }
+      
 
     </script>
     

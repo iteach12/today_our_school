@@ -2,11 +2,6 @@ const SocketIO = require('socket.io');
 const axios = require('axios').default;
 const dotenv = require('dotenv');
 dotenv.config();
-const {
-  today_qoute,
-  today_english,
-  today_phrase,
-} = require('./public/text/gongbu');
 
 const dust_url = `http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=${
   process.env.OPEN_KEY
@@ -108,14 +103,12 @@ module.exports = (server) => {
     socket.timeout = setTimeout(() => {
       socket.emit('dust', JSON.stringify(dust_result));
       socket.emit('meal', neis_meal_info);
-
-      socket.emit('gongbu', today_qoute);
     }, 3000);
     // socket.interval = setInterval(() => {
     //   socket.emit('dust', JSON.stringify(dust_result));
     //   socket.emit('meal', neis_meal_info);
 
-    //   socket.emit('gongbu', today_qoute);
+    //
     // }, 3000);
   });
 };
