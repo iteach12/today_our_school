@@ -3,25 +3,82 @@ const axios = require('axios').default;
 const dotenv = require('dotenv');
 dotenv.config();
 
+let today = new Date();
+let year = today.getFullYear();
+let month = ('0' + (today.getMonth() + 1)).slice(-2);
+let day = ('0' + today.getDate()).slice(-2);
+
+let today_date = year + month + day;
+
+//기온 실황 정보 url
+
+let weather_url =
+  'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst';
+
+let queryParams =
+  '?' +
+  encodeURIComponent('serviceKey') +
+  '=' +
+  `${process.env.DECODING_KEY}`; /* Service Key*/
+
+queryParams +=
+  '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
+queryParams +=
+  '&' +
+  encodeURIComponent('numOfRows') +
+  '=' +
+  encodeURIComponent('1000'); /* */
+queryParams +=
+  '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON'); /* */
+queryParams +=
+  '&' +
+  encodeURIComponent('base_date') +
+  '=' +
+  encodeURIComponent(`${today_date}`); /* */
+queryParams +=
+  '&' +
+  encodeURIComponent('base_time') +
+  '=' +
+  encodeURIComponent('0600'); /* */
+queryParams +=
+  '&' + encodeURIComponent('nx') + '=' + encodeURIComponent('75'); /* */
+queryParams +=
+  '&' + encodeURIComponent('ny') + '=' + encodeURIComponent('125'); /* */
+
+//날씨 url에 쿼리 붙여주기
+weather_url += queryParams;
+let weather_result;
+axios
+  .get(weather_url)
+  .then(async (response) => {
+    const result = await console.log(response);
+
+    // response.data.response.body.items.forEach((item, index, array) => {
+    //   if (item.stationName == '지정면') {
+    //     dust_result = item;
+    //   }
+    // });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+//미세먼지 정보 url
 const dust_url = `http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=${
   process.env.OPEN_KEY
 }&numOfRows=100&returnType=json&ver=1.3&sidoName=${encodeURIComponent('강원')}`;
-
 let dust_result;
-
 //미세먼지 정보 가져오기
 axios
   .get(dust_url)
   .then(async (response) => {
-    const result = await console.log(response);
-    let mySchoolDust = new Object();
+    // const result = await console.log(response);
 
     response.data.response.body.items.forEach((item, index, array) => {
       if (item.stationName == '지정면') {
         dust_result = item;
       }
     });
-    // console.log(`${mySchoolDust}`);
   })
   .catch((err) => {
     console.log(err);
@@ -33,20 +90,6 @@ axios
 
 const gangwondo = 'K10';
 const mySchool = '7891019';
-
-//날짜 갖기
-const date = new Date();
-const year = date.getFullYear();
-const month = date.getMonth() + 1;
-const day = date.getDate();
-const today_date = `${year}${('00' + month.toString()).slice(-2)}${(
-  '00' + day.toString()
-).slice(-2)}`;
-
-// console.log(`오늘은 ${today_date} 입니다.`);
-// console.log(`연도는 ${year} 입니다.`);
-// console.log(`달은 ${month} 입니다.`);
-// console.log(`일은 ${day} 입니다.`);
 
 //기본 호출 url 작성하기
 const basic_request_url = 'https://open.neis.go.kr/hub/mealServiceDietInfo?';
@@ -100,15 +143,7 @@ module.exports = (server) => {
       console.log(data);
     });
 
-    socket.timeout = setTimeout(() => {
-      socket.emit('dust', JSON.stringify(dust_result));
-      socket.emit('meal', neis_meal_info);
-    }, 3000);
-    // socket.interval = setInterval(() => {
-    //   socket.emit('dust', JSON.stringify(dust_result));
-    //   socket.emit('meal', neis_meal_info);
-
-    //
-    // }, 3000);
+    socket.emit('dust', JSON.stringify(dust_result));
+    socket.emit('meal', neis_meal_info);
   });
 };

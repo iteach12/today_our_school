@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./styles/styles.css" />
+    <link rel="shortcut icon" href="./img/favicon.ico">
     <title>오늘 우리 학교는?</title>
   </head>
   <body>
@@ -133,7 +134,7 @@
                 <h1 class="card_title_text">오늘의 급식</h1>
               </div>
               <div>
-                <ul id="meal_info" class="list-disc text-gray-900 text-3xl font-normal ml-8 mt-4"></ul>
+                <ul id="meal_info" class="list-disc text-gray-900 text-4xl font-normal ml-8 mt-4"></ul>
               </div>
               <div class="absolute bottom-0 right-0">
                 <lottie-player src="https://assets9.lottiefiles.com/private_files/lf30_rttpmsbc.json"  background="transparent"  speed="2"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
@@ -153,8 +154,11 @@
             <div class="title_border">
               <h1 class="card_title_text">오늘의 배움</h1>
             </div>
-            <div>
-              <p id="gongbu">
+            <div class="flex-col w-full h-5/6 items-center text-center">
+              <p id="gongbu"  class="mt-20 text-5xl">
+
+              </p>
+              <p id="mean" class="mt-4 text-3xl">
 
               </p>
             </div>
@@ -163,10 +167,13 @@
             <div class="title_border">
               <h1 class="card_title_text">오늘의 명언</h1>
             </div>
-            <div>
-              <p id="quote">
+            <div class="flex-col w-full h-5/6 items-center text-center">
+              <div id="quote" class="mt-20 text-4xl">
 
-              </p>
+              </div>
+              <div id="quote_author" class="text-2xl text-right mt-4 mr-8">
+
+              </div>
             </div>
           </div>
           <div class="h-1/3 pt-8 pr-8 pl-8 bg-white relative">
@@ -240,7 +247,7 @@
         
 
         if(!isWritten){
-          const mealDataParse = data.replace(/<br\/>/gm, ' ');
+        const mealDataParse = data.replace(/<br\/>/gm, ' ');
         const final_meal_data = mealDataParse.split(' ');
         for (let i in final_meal_data) { 
           
@@ -285,10 +292,45 @@
       //텍스트파일 불러오기
       //영어, 사자성어, 명언
       
+      const today_english = getContentFromTxt('./text/english_word.txt');
+      const today_phrase = getContentFromTxt('./text/phrase.txt');
+      const today_quote = getContentFromTxt('./text/quote.txt');
+
+      //엘레멘트 가져오기
+      const quote = document.querySelector('#quote'); //명언
+      const quote_author = document.querySelector('#quote_author'); //명언 말한 사람
+      const gongbu = document.querySelector('#gongbu'); //영어단어
+      const mean = document.querySelector('#mean'); //영단어 뜻
       
-      // getContentFromTxt('./text/english_word.txt');      
-      document.querySelector('#quote').textContent = `${getContentFromTxt('./text/quote.txt')}`;
-      document.querySelector('#gongbu').textContent = `${getContentFromTxt('./text/phrase.txt')}`;
+
+      //명언 넣기
+      quote.textContent = `${today_quote.split('*')[0]}`;
+      quote_author.textContent = `- ${today_quote.split('*')[1]}`;
+
+      //사자성어 먼저 넣기(영어는 30분 뒤 바뀜)
+      gongbu.textContent = `${today_phrase.split('*')[0]}`;
+      mean.textContent = `뜻 : ${today_phrase.split('*')[1]}`;
+
+      let isPhrase = true;
+      function makeTodayStudyInfo(){
+        if(isPhrase){
+          gongbu.textContent = `${today_english.split('*')[0]}`;
+          mean.textContent = `뜻 : ${today_english.split('*')[1]}`;
+          isPhrase = false;
+        }else{
+          gongbu.textContent = `${today_phrase.split('*')[0]}`;
+          mean.textContent = `뜻 : ${today_phrase.split('*')[1]}`;
+          isPhrase = true;
+      }
+      }
+      function studyInfotimerInit(){
+          setInterval(makeTodayStudyInfo, 15000);
+      }
+      studyInfotimerInit();
+
+     
+      
+      //파일에서 데이터 랜덤으로 뽑아내기
       function getContentFromTxt(url){
       let content = null;
       let result_array;
@@ -303,10 +345,7 @@
       return result_array[Math.floor(Math.random() * result_array.length)];
       }
       
-      function separateStringWithAsterisk(dataString){
-        //공부 어레이 *로 잘라서 넣기.
-        
-      }
+      
       
 
     </script>
