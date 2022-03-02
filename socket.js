@@ -3,17 +3,19 @@ const axios = require('axios').default;
 const dotenv = require('dotenv');
 dotenv.config();
 
+//오늘 날짜 가져오기
 let today = new Date();
 let year = today.getFullYear();
 let month = ('0' + (today.getMonth() + 1)).slice(-2);
 let day = ('0' + today.getDate()).slice(-2);
-
+let hours = ('0' + today.getHours()).slice(-2) + '00';
+//날짜 20220304 방식으로 제작.
 let today_date = year + month + day;
 
 //기온 실황 정보 url
 
 let weather_url =
-  'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst';
+  'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst';
 
 let queryParams =
   '?' +
@@ -39,7 +41,7 @@ queryParams +=
   '&' +
   encodeURIComponent('base_time') +
   '=' +
-  encodeURIComponent('0600'); /* */
+  encodeURIComponent(`${hours}`); /* */
 queryParams +=
   '&' + encodeURIComponent('nx') + '=' + encodeURIComponent('75'); /* */
 queryParams +=
@@ -52,12 +54,6 @@ axios
   .get(weather_url)
   .then(async (response) => {
     const result = await console.log(response);
-
-    // response.data.response.body.items.forEach((item, index, array) => {
-    //   if (item.stationName == '지정면') {
-    //     dust_result = item;
-    //   }
-    // });
   })
   .catch((err) => {
     console.log(err);
