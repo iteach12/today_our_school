@@ -19,7 +19,7 @@ let queryParams =
   '?' +
   encodeURIComponent('serviceKey') +
   '=' +
-  `${process.env.DECODING_KEY}`; /* Service Key*/
+  process.env.OPEN_KEY; /* Service Key*/
 
 queryParams +=
   '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
