@@ -3,6 +3,9 @@ const axios = require('axios').default;
 const dotenv = require('dotenv');
 dotenv.config();
 
+
+
+
 //오늘 날짜 가져오기
 let today = new Date();
 let year = today.getFullYear();
@@ -41,7 +44,7 @@ queryParams +=
   '&' +
   encodeURIComponent('base_time') +
   '=' +
-  encodeURIComponent(`${hours}`); /* */
+  encodeURIComponent('0630'); /* */
 queryParams +=
   '&' + encodeURIComponent('nx') + '=' + encodeURIComponent('75'); /* */
 queryParams +=
@@ -50,6 +53,7 @@ queryParams +=
 //날씨 url에 쿼리 붙여주기
 weather_url += queryParams;
 let weather_result;
+
 axios
   .get(weather_url)
   .then(async (response) => {
@@ -65,20 +69,20 @@ const dust_url = `http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnR
 }&numOfRows=100&returnType=json&ver=1.3&sidoName=${encodeURIComponent('강원')}`;
 let dust_result;
 //미세먼지 정보 가져오기
-axios
-  .get(dust_url)
-  .then(async (response) => {
-    // const result = await console.log(response);
+// axios
+//   .get(dust_url)
+//   .then(async (response) => {
+//     // const result = await console.log(response);
 
-    response.data.response.body.items.forEach((item, index, array) => {
-      if (item.stationName == '지정면') {
-        dust_result = item;
-      }
-    });
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+//     response.data.response.body.items.forEach((item, index, array) => {
+//       if (item.stationName == '지정면') {
+//         dust_result = item;
+//       }
+//     });
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
 
 //여기까지 미세먼지 가져오기.
 
@@ -96,7 +100,7 @@ const basic_request_url = 'https://open.neis.go.kr/hub/mealServiceDietInfo?';
 
 //테스트용 급식 파싱 url
 //오늘 날짜가 빠져있음.
-let url = `${basic_request_url}&Key=${process.env.NEIS_KEY}&Type=json&pIndex=1&pSize=1&ATPT_OFCDC_SC_CODE=${gangwondo}&SD_SCHUL_CODE=${mySchool}&MLSV_YMD=20211224`;
+let url = `${basic_request_url}&Key=${process.env.NEIS_KEY}&Type=json&pIndex=1&pSize=1&ATPT_OFCDC_SC_CODE=${gangwondo}&SD_SCHUL_CODE=${mySchool}&MLSV_YMD=${today_date}`;
 
 //neis 급식 데이터 가져오기
 function parsing_json(obj) {
@@ -115,6 +119,9 @@ let neis_meal_info;
 const get_meal_info = () => {
   axios.get(url).then(async (res) => {
     neis_meal_info = parsing_json(res).toString();
+  }).catch((err)=>{
+    console.error(err);
+    neis_meal_info = '오늘은 급식 없는 날!!';
   });
 };
 

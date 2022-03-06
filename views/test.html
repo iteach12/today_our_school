@@ -247,6 +247,14 @@
         
 
         if(!isWritten){
+        if(data == '오늘은 급식 없는 날!!'){
+          const li = document.createElement("li");
+          const textNode = document.createTextNode(data);
+          li.appendChild(textNode);
+          
+          document.getElementById('meal_info').appendChild(li);
+          return;
+        }
         const mealDataParse = data.replace(/<br\/>/gm, ' ');
         const final_meal_data = mealDataParse.split(' ');
         for (let i in final_meal_data) { 
