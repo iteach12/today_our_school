@@ -1,5 +1,5 @@
 module.exports = {
-  content: ['./views/main.html', './views/test.html'],
+  content: ['./views/main.html', './views/test.html', './flex_test.html'],
   presets: [],
   darkMode: 'media', // or 'class'
   theme: {

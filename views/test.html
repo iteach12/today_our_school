@@ -11,7 +11,7 @@
   <body>
     <main class="flex w-full h-full">
       <header class="flex-col max-h-full w-1/5 bg-headercolor">
-        <div class="flex justify-center mt-12"><h1 class="text-white font-bold text-3xl">2022년 3월 2일 수요일</h1>
+        <div class="flex justify-center mt-12"><h1 class="text-white font-bold text-3xl" id="today_date">2022년 3월 2일 수요일</h1>
         </div>
         <div class="flex justify-center mt-6" >
           <img src="./img/logo.png" alt="logo" class="w-36 h-32"></img>
@@ -83,7 +83,7 @@
                 <td style="width: 250px;
                 padding: 10px;
                 vertical-align: top;
-                border-bottom: 1px solid #ccc;" align="center">-10</td>
+                border-bottom: 1px solid #ccc;" align="center" id="T1H">-10</td>
               </tr>
               <tr>
                 <th scope="row" style="width: 170px;
@@ -94,18 +94,18 @@
                 <td style="width: 250px;
                 padding: 10px;
                 vertical-align: top;
-                border-bottom: 1px solid #ccc;" align="center">빗방울</td>
+                border-bottom: 1px solid #ccc;" align="center" id="PTY">빗방울</td>
               </tr>
               <tr>
                 <th scope="row" style="width: 170px;
                 padding: 10px;
                 font-weight: bold;
                 vertical-align: top;
-                border-bottom: 1px solid #ccc;" align="center" class="table_head_text">강수량</th>
+                border-bottom: 1px solid #ccc;" align="center" class="table_head_text">습도</th>
                 <td style="width: 250px;
                 padding: 10px;
                 vertical-align: top;
-                border-bottom: 1px solid #ccc;" align="center">25.2mm</td>
+                border-bottom: 1px solid #ccc;" align="center" id="REH">25.2mm</td>
               </tr>
               
             </table>
@@ -154,11 +154,11 @@
             <div class="title_border">
               <h1 class="card_title_text">오늘의 배움</h1>
             </div>
-            <div class="flex-col w-full h-5/6 items-center text-center">
-              <p id="gongbu"  class="mt-20 text-5xl">
+            <div class="flex flex-col w-full h-5/6 justify-center text-center">
+              <p id="gongbu"  class="text-6xl">
 
               </p>
-              <p id="mean" class="mt-4 text-3xl">
+              <p id="mean" class="mt-4 text-4xl">
 
               </p>
             </div>
@@ -167,11 +167,11 @@
             <div class="title_border">
               <h1 class="card_title_text">오늘의 명언</h1>
             </div>
-            <div class="flex-col w-full h-5/6 items-center text-center">
-              <div id="quote" class="mt-20 text-4xl">
+            <div class="flex justify-center flex-col w-full h-5/6 items-center text-center">
+              <div id="quote" class="text-5xl">
 
               </div>
-              <div id="quote_author" class="text-2xl text-right mt-4 mr-8">
+              <div id="quote_author" class="text-3xl text-right mt-4 mr-8">
 
               </div>
             </div>
@@ -181,10 +181,11 @@
               <h1 class="card_title_text" >지금 몇 시지?</h1>
             </div>
             <img src="./img/alarm-clock.png" alt="clock" class="w-20 h-20 absolute top-3 right-52"></img>
-            <div class="flex justify-center h-5/6 w-full items-center" >
+            <div class="flex flex-col justify-center w-full h-5/6 text-center" >
              
-              <p id="my_clock" class="text-5xl"></p>
-              <p></p>
+              <div id="my_clock" class="text-6xl"></div>
+              <div id="timetable" class="mt-4 text-3xl">1교시 중</div>
+              
             </div>
           </div>
         </section>
@@ -194,12 +195,52 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script>
+      //오늘 날짜부터 넣기.
       
+
+
       const socket = io.connect('http://localhost:8005', {
         path: '/socket.io',
         transports: ['websocket'],
       });
       
+      socket.on('T1H', (data)=>{
+        document.querySelector('#T1H').textContent = `${data} °C`;
+
+      });
+
+      socket.on('REH', (data)=>{
+        document.querySelector('#REH').textContent = `${data} %`;
+      });
+
+      socket.on('PTY', (data)=>{
+        let statusPTY;
+        switch(data){
+          case '0':
+            statusPTY = '비 없음';
+            break;
+          case '1':
+            statusPTY = '비';
+            break;
+          case '2':
+            statusPTY = '비/눈';
+            break;
+          case '3':
+            statusPTY = '눈';
+            break;
+          case '5':
+            statusPTY = '빗방울';
+            break;
+          case '6':
+            statusPTY = '빗방울, 눈날림';
+            break;
+          case '7':
+            statusPTY = '눈날림';
+            break;
+        }
+        document.querySelector('#PTY').textContent = `${statusPTY}`;
+      });
+
       socket.on('dust', (data) => {
         const currentDustData = JSON.parse(data);
         let pm10GradeText;
@@ -253,6 +294,7 @@
           li.appendChild(textNode);
           
           document.getElementById('meal_info').appendChild(li);
+          isWritten = true;
           return;
         }
         const mealDataParse = data.replace(/<br\/>/gm, ' ');
@@ -276,8 +318,40 @@
       });
 
       
+      //오늘 메인 날짜
+      const my_Date = new Date();
+      const myYear = my_Date.getFullYear();
+      const myMonth = my_Date.getMonth()+1;
+      const myDate = my_Date.getDate();
+      const myDay = getMyDay();
+      function getMyDay(){
+        let result;
+        switch(my_Date.getDay()){
+          case 0:
+          result = '일요일';
+          case 1:
+          result = '월요일';
+          case 2:
+          result = '화요일';
+          case 3:
+          result = '수요일';
+          case 4:
+          result = '목요일';
+          case 5:
+          result = '금요일';
+          case 6:
+          result = '토요일';
+        }
+        return result;
+        
+      }
+
+
+      document.querySelector('#today_date').textContent = `${myYear}년 ${myMonth}월 ${myDate}일 ${myDay}`;
+
       //지금 몇 시지?
       const clock = document.querySelector('#my_clock');
+      const timetable = document.querySelector('#timetable');
       //현재 시각 가져오기
       //12시 이후라면 -12해서 1시로 표현하기. (12시간제)
       //시 자리가 한 자리라면 0을 붙여서 자리수 맞추기.
@@ -288,6 +362,61 @@
           const seconds = time.getSeconds();
           //clock.innerHTML = hour +":" + minutes + ":"+seconds;
           clock.textContent = `${hour}시 ${minutes<10 ? `0${minutes}`:minutes}분 ${seconds<10 ? `0${seconds}`:seconds}초`;
+          
+
+          if(hour == 9){
+          if(minutes < 10){
+              timetable.textContent = `- 아침활동 -`;
+            }else if(minutes >= 10 && minutes < 50){
+              timetable.textContent = `- 1교시 -`;
+            }else{
+              timetable.textContent = `- 2교시 -`;
+            }
+          }else if(hour == 10){
+            if(minutes < 30){
+              timetable.textContent = `- 2교시 -`;
+            }else{
+              timetable.textContent = `- 중간놀이 -`;
+            }
+          }else if(hour == 11){
+            if(minutes < 40){
+              timetable.textContent = `- 3교시 -`;
+            }else{
+              timetable.textContent = `- 4교시 -`;
+            }
+          }else if(hour == 12){
+            if(minutes < 15){
+              timetable.textContent = `- 4교시 -`;
+            }else{
+              timetable.textContent = `- 점심시간 -`;
+            }
+          }else if(hour == 1){
+            if(minutes < 10){
+              timetable.textContent = `- 점심시간 -`;
+            }else if(minutes >= 10 && minutes < 50){
+              timetable.textContent = `- 5교시 -`;
+            }else{
+              timetable.textContent = `- 6교시 -`;
+            }
+          }else if(hour == 2){
+            if(minutes < 30){
+              timetable.textContent = `- 6교시 -`;
+            }else if(minutes >= 40){
+              timetable.textContent = `- 방과후 7교시 -`;
+            }
+          }else if(hour == 3){
+            if(minutes <= 20){
+              timetable.textContent = `- 방과후 7교시 -`;
+            }else if(minutes > 20 && minutes <=50){
+              timetable.textContent = `- 방과후 8교시 -`;
+            }else{
+              timetable.textContent = `- 에듀버스 탑승 -`;
+            }
+          }
+
+
+
+          
 
       }
       
@@ -317,17 +446,17 @@
 
       //사자성어 먼저 넣기(영어는 30분 뒤 바뀜)
       gongbu.textContent = `${today_phrase.split('*')[0]}`;
-      mean.textContent = `뜻 : ${today_phrase.split('*')[1]}`;
+      mean.textContent = `${today_phrase.split('*')[1]}`;
 
       let isPhrase = true;
       function makeTodayStudyInfo(){
         if(isPhrase){
           gongbu.textContent = `${today_english.split('*')[0]}`;
-          mean.textContent = `뜻 : ${today_english.split('*')[1]}`;
+          mean.textContent = `${today_english.split('*')[1]}`;
           isPhrase = false;
         }else{
           gongbu.textContent = `${today_phrase.split('*')[0]}`;
-          mean.textContent = `뜻 : ${today_phrase.split('*')[1]}`;
+          mean.textContent = `${today_phrase.split('*')[1]}`;
           isPhrase = true;
       }
       }
