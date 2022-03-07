@@ -11,61 +11,105 @@ let day = ('0' + today.getDate()).slice(-2);
 let hours = ('0' + today.getHours()).slice(-2) + '00';
 let minutes = today.getMinutes();
 
-function getMeasureTime() {
+//초단기실황에 알맞게 시간 세팅 (1200 / 00기준임.)
+//초단기예보는 (1230 / 30분 기준임.)
+function getWeatherTime(url) {
+  //초단기 실황 세팅 시간.
   const today = new Date();
-  const hours = ('0' + today.getHours()).slice(-2) + '00';
-  const hours_minus_1 = ('0' + (today.getHours() - 1)).slice(-2) + '00';
-  if (today.getMinutes() < 45) {
-    return hours_minus_1;
+  if (url == now_weather_base_url) {
+    const hours = ('0' + today.getHours()).slice(-2) + '00';
+    const hours_minus_1 = ('0' + (today.getHours() - 1)).slice(-2) + '00';
+    if (today.getMinutes() < 45) {
+      return hours_minus_1;
+    } else {
+      return hours;
+    }
   } else {
-    return hours;
+    const hours = ('0' + today.getHours()).slice(-2) + '30';
+    const hours_minus_1 = ('0' + (today.getHours() - 1)).slice(-2) + '30';
+    if (today.getMinutes() < 45) {
+      return hours_minus_1;
+    } else {
+      return hours;
+    }
   }
 }
-// let newDateObj = new Date();
-// newDateObj.setTime(hours + 30 * 60 * 1000);
-// console.log(newDateObj);
 
-//날짜 20220304 방식으로 제작.
+//날짜 20220304 방식으로 합치기
 let today_date = year + month + day;
 
-//기온 실황 정보 url
-let now_weather_url =
+//url 초기화하기
+function initApiUrl(url, firstParams, firstValue) {
+  return (
+    url +
+    '?' +
+    encodeURIComponent(firstParams) +
+    '=' +
+    encodeURIComponent(firstValue)
+  );
+}
+
+//파라미터 추가하기
+function makeParams(str, value) {
+  let result = '&' + encodeURIComponent(str) + '=' + encodeURIComponent(value);
+  return result;
+}
+
+//국경일 특일 정보 url
+let holiday_base_url =
+  'http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo';
+
+//특일 정보는 DECODING_KEY가 사용됨.
+let holiday_url = initApiUrl(
+  holiday_base_url,
+  'ServiceKey',
+  process.env.DECODING_KEY
+);
+holiday_url += makeParams('solYear', year);
+holiday_url += makeParams('solMonth', month);
+holiday_url += makeParams('_type', 'json');
+function getHoliday() {
+  axios
+    .get(holiday_url)
+    .then(async (response) => {
+      const result = await response;
+      console.log(result.data.response.body.items);
+
+      // for (let i in result) {
+      //   //기온
+      //   if (result[i].category == 'SKY') {
+      //     console.log(
+      //       `관측시간 : ${result[i].baseTime} 하늘상태(SKY) : ${result[i].fcstValue}`
+      //     );
+      //     SKY_result = result[i].fcstValue;
+      //   }
+      // }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+//초단기 실황 정보 url
+let now_weather_base_url =
   'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst';
 
-let queryParams =
-  '?' +
-  encodeURIComponent('serviceKey') +
-  '=' +
-  process.env.OPEN_KEY; /* Service Key*/
+let weather_url = initApiUrl(
+  now_weather_base_url,
+  'serviceKey',
+  process.env.OPEN_KEY
+);
+weather_url += makeParams('pageNo', '1');
+weather_url += makeParams('numOfRows', '1000');
+weather_url += makeParams('dataType', 'JSON');
+weather_url += makeParams('base_date', `${today_date}`);
+weather_url += makeParams(
+  'base_time',
+  `${getWeatherTime(now_weather_base_url)}`
+);
+weather_url += makeParams('nx', '75');
+weather_url += makeParams('ny', '125');
 
-queryParams +=
-  '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
-queryParams +=
-  '&' +
-  encodeURIComponent('numOfRows') +
-  '=' +
-  encodeURIComponent('1000'); /* */
-queryParams +=
-  '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON'); /* */
-queryParams +=
-  '&' +
-  encodeURIComponent('base_date') +
-  '=' +
-  encodeURIComponent(`${today_date}`); /* */
-queryParams +=
-  '&' +
-  encodeURIComponent('base_time') +
-  '=' +
-  encodeURIComponent(`${getMeasureTime()}`); /* `${hours}`*/
-queryParams +=
-  '&' + encodeURIComponent('nx') + '=' + encodeURIComponent('75'); /* */
-queryParams +=
-  '&' + encodeURIComponent('ny') + '=' + encodeURIComponent('125'); /* */
-
-console.log(getMeasureTime());
-
-//날씨 url에 쿼리 붙여주기
-now_weather_url += queryParams;
 let T1H_result; //기온
 let RN1_result; //강수량(1시간)
 let SKY_result; //하늘상태
@@ -74,12 +118,11 @@ let WSD_result; //풍속
 let VEC_result; //풍향
 let REH_result; //습도
 
+//초단기실황 가져오기
 function getNowWeather() {
   axios
-    .get(now_weather_url)
+    .get(weather_url)
     .then(async (response) => {
-      //초단기예보일때
-
       const result = await response.data.response.body.items.item;
 
       for (let i in result) {
@@ -110,40 +153,47 @@ function getNowWeather() {
 }
 
 //초단기예보
-let forcast_weather_url =
+let forcast_weather_base_url =
   'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst';
-let forcast_queryParams =
-  '?' +
-  encodeURIComponent('serviceKey') +
-  '=' +
-  process.env.OPEN_KEY; /* Service Key*/
 
-forcast_queryParams +=
-  '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /* */
-forcast_queryParams +=
-  '&' +
-  encodeURIComponent('numOfRows') +
-  '=' +
-  encodeURIComponent('1000'); /* */
-forcast_queryParams +=
-  '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON'); /* */
-forcast_queryParams +=
-  '&' +
-  encodeURIComponent('base_date') +
-  '=' +
-  encodeURIComponent(`${today_date}`); /* */
-forcast_queryParams +=
-  '&' +
-  encodeURIComponent('base_time') +
-  '=' +
-  encodeURIComponent(`${getMeasureTime()}`); /* `${hours}`*/
-forcast_queryParams +=
-  '&' + encodeURIComponent('nx') + '=' + encodeURIComponent('75'); /* */
-forcast_queryParams +=
-  '&' + encodeURIComponent('ny') + '=' + encodeURIComponent('125'); /* */
+let forcast_url = initApiUrl(
+  forcast_weather_base_url,
+  'serviceKey',
+  process.env.OPEN_KEY
+);
+forcast_url += makeParams('pageNo', '1');
+forcast_url += makeParams('numOfRows', '1000');
+forcast_url += makeParams('dataType', 'JSON');
+forcast_url += makeParams('base_date', `${today_date}`);
+forcast_url += makeParams(
+  'base_time',
+  `${getWeatherTime(forcast_weather_base_url)}`
+);
+forcast_url += makeParams('pageNo', '1');
+forcast_url += makeParams('nx', '75');
+forcast_url += makeParams('ny', '125');
 
-//초단기예보 url에 params 붙여주기
-forcast_weather_url += forcast_queryParams;
+//초단기예보 가져오기
+function getForcastWeather() {
+  axios
+    .get(forcast_url)
+    .then(async (response) => {
+      const result = await response.data.response.body.items.item;
+
+      for (let i in result) {
+        //기온
+        if (result[i].category == 'SKY') {
+          console.log(
+            `관측시간 : ${result[i].baseTime} 하늘상태(SKY) : ${result[i].fcstValue}`
+          );
+          SKY_result = result[i].fcstValue;
+        }
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 
 //미세먼지 정보 url
 const dust_url = `http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=${
@@ -220,7 +270,16 @@ module.exports = (server) => {
 
     get_meal_info();
     getNowWeather();
+    getForcastWeather();
     getNowDust();
+    getHoliday();
+
+    socket.emit('meal', neis_meal_info);
+    socket.emit('dust', JSON.stringify(dust_result));
+    socket.emit('T1H', T1H_result);
+    socket.emit('PTY', PTY_result);
+    socket.emit('REH', REH_result);
+    socket.emit('SKY', SKY_result);
 
     socket.on('disconnect', () => {
       console.log('클라이언트 접속 해제', ip, socket.id);
@@ -233,19 +292,24 @@ module.exports = (server) => {
       console.log(data);
     });
 
+    //인터벌 생성
+    //현재는 10분단위 반복
     socket.interval = setInterval(() => {
+      //초단기실황 가져오기
       getNowWeather();
+
+      //초단기예보 가져오기
+      getForcastWeather();
+
+      //미세먼지 정보 가져오기
       getNowDust();
 
+      //소켓 전송하기
       socket.emit('dust', JSON.stringify(dust_result));
       socket.emit('T1H', T1H_result);
       socket.emit('PTY', PTY_result);
       socket.emit('REH', REH_result);
-    }, 1000 * 60 * 10);
-    socket.emit('meal', neis_meal_info);
-    socket.emit('dust', JSON.stringify(dust_result));
-    socket.emit('T1H', T1H_result);
-    socket.emit('PTY', PTY_result);
-    socket.emit('REH', REH_result);
+      socket.emit('SKY', SKY_result);
+    }, 1000 * 60 * 1); //1분 단위 반복
   });
 };

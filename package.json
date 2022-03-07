@@ -20,8 +20,10 @@
     "nunjucks": "^3.2.3",
     "postcss": "^8.4.6",
     "postcss-cli": "^9.1.0",
+    "request": "^2.88.2",
     "socket.io": "^4.4.1",
-    "ws": "^8.5.0"
+    "ws": "^8.5.0",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "nodemon": "^2.0.15",

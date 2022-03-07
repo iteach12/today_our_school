@@ -206,13 +206,19 @@
       
       socket.on('T1H', (data)=>{
         document.querySelector('#T1H').textContent = `${data} °C`;
-        socket.emit('reply', 'T1H(기온) 연결됨');
+        if(data != null){
+          socket.emit('reply', 'T1H(기온) 연결됨');
+        }
+        
 
       });
 
       socket.on('REH', (data)=>{
         document.querySelector('#REH').textContent = `${data} %`;
-        socket.emit('reply', 'REH(습도) 연결됨');
+        if(data != null){
+          socket.emit('reply', 'REH(습도) 연결됨');
+        }
+        
       });
 
       socket.on('PTY', (data)=>{
@@ -241,7 +247,30 @@
             break;
         }
         document.querySelector('#PTY').textContent = `${statusPTY}`;
-        socket.emit('reply', 'PTY(강수상태) 연결됨');
+        if(statusPTY != null){
+          socket.emit('reply', 'PTY(강수형태) 연결됨');
+        }
+      });
+
+        socket.on('SKY', (data)=>{
+        let statusSKY;
+        switch(data){
+          case '0', '1', '2', '3', '4', '5':
+            statusSKY = '맑음';
+            break;
+          case '6', '7', '8':
+            statusSKY = '구름많음';
+            break;
+          case '9', '10':
+            statusSKY = '흐림';
+            break;
+          
+        }
+        // document.querySelector('#SKY').textContent = `${statusSKY}`;
+        if(statusSKY != null){
+          socket.emit('reply', 'SKY(하늘상태) 연결됨');
+        }
+        
       });
 
       socket.on('dust', (data) => {
@@ -348,7 +377,6 @@
         return result;
         
       }
-
 
       document.querySelector('#today_date').textContent = `${myYear}년 ${myMonth}월 ${myDate}일 ${myDay}`;
 
