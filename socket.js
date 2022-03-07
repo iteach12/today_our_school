@@ -74,39 +74,40 @@ let WSD_result; //풍속
 let VEC_result; //풍향
 let REH_result; //습도
 
-axios
-  .get(now_weather_url)
-  .then(async (response) => {
-    //초단기예보일때
-    console.log(response.data);
+function getNowWeather() {
+  axios
+    .get(now_weather_url)
+    .then(async (response) => {
+      //초단기예보일때
 
-    const result = await response.data.response.body.items.item;
+      const result = await response.data.response.body.items.item;
 
-    for (let i in result) {
-      //기온
-      if (result[i].category == 'T1H') {
-        console.log(
-          `관측시간 : ${result[i].baseTime} 기온(T1H) : ${result[i].obsrValue}`
-        );
-        T1H_result = result[i].obsrValue;
+      for (let i in result) {
+        //기온
+        if (result[i].category == 'T1H') {
+          console.log(
+            `관측시간 : ${result[i].baseTime} 기온(T1H) : ${result[i].obsrValue}`
+          );
+          T1H_result = result[i].obsrValue;
+        }
+        if (result[i].category == 'PTY') {
+          console.log(
+            `관측시간 : ${result[i].baseTime} 강수형태(PTY) : ${result[i].obsrValue}`
+          );
+          PTY_result = result[i].obsrValue;
+        }
+        if (result[i].category == 'REH') {
+          console.log(
+            `관측시간 : ${result[i].baseTime} 1시간강수량(REH) : ${result[i].obsrValue}`
+          );
+          REH_result = result[i].obsrValue;
+        }
       }
-      if (result[i].category == 'PTY') {
-        console.log(
-          `관측시간 : ${result[i].baseTime} 강수형태(PTY) : ${result[i].obsrValue}`
-        );
-        PTY_result = result[i].obsrValue;
-      }
-      if (result[i].category == 'REH') {
-        console.log(
-          `관측시간 : ${result[i].baseTime} 1시간강수량(REH) : ${result[i].obsrValue}`
-        );
-        REH_result = result[i].obsrValue;
-      }
-    }
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 
 //초단기예보
 let forcast_weather_url =
@@ -151,22 +152,24 @@ const dust_url = `http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnR
 
 let dust_result;
 //미세먼지 정보 가져오기
-axios
-  .get(dust_url)
-  .then(async (response) => {
-    response.data.response.body.items.forEach((item, index, array) => {
-      if (item.stationName == '지정면' && item.pm10Value != null) {
-        dust_result = item;
-        console.log(item);
-      } else if (item.stationName == '횡성읍' && item.pm10Value != null) {
-        dust_result = item;
-        console.log(item);
-      }
+function getNowDust() {
+  axios
+    .get(dust_url)
+    .then(async (response) => {
+      response.data.response.body.items.forEach((item, index, array) => {
+        if (item.stationName == '지정면' && item.pm10Value != null) {
+          dust_result = item;
+          console.log(item);
+        } else if (item.stationName == '횡성읍' && item.pm10Value != null) {
+          dust_result = item;
+          console.log(item);
+        }
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+}
 
 //여기까지 미세먼지 가져오기.
 
@@ -216,6 +219,8 @@ module.exports = (server) => {
     console.log('새로운 클라이언트 접속!', ip, socket.id, req.ip);
 
     get_meal_info();
+    getNowWeather();
+    getNowDust();
 
     socket.on('disconnect', () => {
       console.log('클라이언트 접속 해제', ip, socket.id);
@@ -229,11 +234,14 @@ module.exports = (server) => {
     });
 
     socket.interval = setInterval(() => {
+      getNowWeather();
+      getNowDust();
+
       socket.emit('dust', JSON.stringify(dust_result));
       socket.emit('T1H', T1H_result);
       socket.emit('PTY', PTY_result);
       socket.emit('REH', REH_result);
-    }, 1000 * 60 * 5);
+    }, 1000 * 60 * 10);
     socket.emit('meal', neis_meal_info);
     socket.emit('dust', JSON.stringify(dust_result));
     socket.emit('T1H', T1H_result);

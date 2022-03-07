@@ -206,11 +206,13 @@
       
       socket.on('T1H', (data)=>{
         document.querySelector('#T1H').textContent = `${data} °C`;
+        socket.emit('reply', 'T1H(기온) 연결됨');
 
       });
 
       socket.on('REH', (data)=>{
         document.querySelector('#REH').textContent = `${data} %`;
+        socket.emit('reply', 'REH(습도) 연결됨');
       });
 
       socket.on('PTY', (data)=>{
@@ -239,6 +241,7 @@
             break;
         }
         document.querySelector('#PTY').textContent = `${statusPTY}`;
+        socket.emit('reply', 'PTY(강수상태) 연결됨');
       });
 
       socket.on('dust', (data) => {
