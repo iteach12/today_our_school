@@ -123,7 +123,7 @@
       <content class="flex max-h-full space-x-4 w-4/5 p-16 bg-sectioncolor">
         <section class="flex-col space-y-8 max-h-full w-2/3 static">
           <div class="h-1/2 bg-white p-8 relative">
-            <div class="title_border"><h1 class="card_title_text">오늘 우리 학교는?</h1></div>
+            <div class="title_border align-middle"><h1 class="card_title_text align-middle">오늘 우리 학교는?</h1></div>
             <div class="absolute  bottom-0 right-0">
               <lottie-player src="https://assets1.lottiefiles.com/packages/lf20_K7aZUG.json"  background="transparent"  speed="1"   loop  autoplay style="width:450px; height:450px;"></lottie-player>
             </div>
@@ -205,8 +205,9 @@
       });
       
       socket.on('T1H', (data)=>{
-        document.querySelector('#T1H').textContent = `${data} °C`;
+        
         if(data != null){
+          document.querySelector('#T1H').textContent = `${data} °C`;
           socket.emit('reply', 'T1H(기온) 연결됨');
         }
         
@@ -214,8 +215,9 @@
       });
 
       socket.on('REH', (data)=>{
-        document.querySelector('#REH').textContent = `${data} %`;
+        
         if(data != null){
+          document.querySelector('#REH').textContent = `${data} %`;
           socket.emit('reply', 'REH(습도) 연결됨');
         }
         
@@ -246,8 +248,9 @@
             statusPTY = '눈날림';
             break;
         }
-        document.querySelector('#PTY').textContent = `${statusPTY}`;
+        
         if(statusPTY != null){
+          document.querySelector('#PTY').textContent = `${statusPTY}`;
           socket.emit('reply', 'PTY(강수형태) 연결됨');
         }
       });
@@ -273,6 +276,10 @@
         
       });
 
+      socket.on('holiday', (data)=>{
+        const currentHolidayData = JSON.parse(data);
+
+      })
       socket.on('dust', (data) => {
         const currentDustData = JSON.parse(data);
         let pm10GradeText;
@@ -306,12 +313,25 @@
             break;
         }
         
-        document.querySelector('#dust_mise').textContent = `${currentDustData.pm10Value} ㎍/㎥`;
-        document.querySelector('#dust_mise_grade').textContent = `${pm10GradeText}`;
-        document.querySelector('#dust_cho_mise').textContent = `${currentDustData.pm25Value} ㎍/㎥`;
-        document.querySelector('#dust_cho_mise_grade').textContent = `${pm25GradeText}`;
-        document.querySelector('#update_time').textContent = `${currentDustData.dataTime}`;
+        if(currentDustData.pm10Value != null){
+          document.querySelector('#dust_mise').textContent = `${currentDustData.pm10Value} ㎍/㎥`;
+        }
+        
+        if(currentDustData.pm10GradeText != null){
+          document.querySelector('#dust_mise_grade').textContent = `${pm10GradeText}`;
+        }
+        
+        if(currentDustData.pm25Value != null){
+          document.querySelector('#dust_cho_mise').textContent = `${currentDustData.pm25Value} ㎍/㎥`;
+        }
+        if(currentDustData.pm25GradeText != null){
+          document.querySelector('#dust_cho_mise_grade').textContent = `${pm25GradeText}`;
+        }
+        if(currentDustData.dataTime != null){
+          document.querySelector('#update_time').textContent = `${currentDustData.dataTime}`;
 
+        }
+        
         socket.emit('reply', '미세먼지 데이터 연결됨');
       });
      

@@ -59,6 +59,9 @@ function makeParams(str, value) {
 let holiday_base_url =
   'http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo';
 
+//특일정보 담기
+let holiday;
+
 //특일 정보는 DECODING_KEY가 사용됨.
 let holiday_url = initApiUrl(
   holiday_base_url,
@@ -74,7 +77,7 @@ function getHoliday() {
     .then(async (response) => {
       const result = await response;
       console.log(result.data.response.body.items);
-
+      holiday = result.data.response.body.items;
       // for (let i in result) {
       //   //기온
       //   if (result[i].category == 'SKY') {
@@ -210,10 +213,12 @@ function getNowDust() {
         if (item.stationName == '지정면' && item.pm10Value != null) {
           dust_result = item;
           console.log(item);
-        } else if (item.stationName == '횡성읍' && item.pm10Value != null) {
-          dust_result = item;
-          console.log(item);
         }
+
+        // if (item.stationName == '횡성읍' && item.pm10Value != null) {
+        //   dust_result = item;
+        //   console.log(item);
+        // }
       });
     })
     .catch((err) => {
@@ -260,6 +265,12 @@ const get_meal_info = () => {
     });
 };
 
+get_meal_info();
+getNowWeather();
+getForcastWeather();
+getNowDust();
+getHoliday();
+
 module.exports = (server) => {
   const io = SocketIO(server, { path: '/socket.io' });
 
@@ -268,14 +279,9 @@ module.exports = (server) => {
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     console.log('새로운 클라이언트 접속!', ip, socket.id, req.ip);
 
-    get_meal_info();
-    getNowWeather();
-    getForcastWeather();
-    getNowDust();
-    getHoliday();
-
     socket.emit('meal', neis_meal_info);
     socket.emit('dust', JSON.stringify(dust_result));
+    socket.emit('holiday', JSON.stringify(holiday));
     socket.emit('T1H', T1H_result);
     socket.emit('PTY', PTY_result);
     socket.emit('REH', REH_result);
@@ -293,7 +299,7 @@ module.exports = (server) => {
     });
 
     //인터벌 생성
-    //현재는 10분단위 반복
+    //현재는 15분단위 반복
     socket.interval = setInterval(() => {
       //초단기실황 가져오기
       getNowWeather();
@@ -310,6 +316,6 @@ module.exports = (server) => {
       socket.emit('PTY', PTY_result);
       socket.emit('REH', REH_result);
       socket.emit('SKY', SKY_result);
-    }, 1000 * 60 * 1); //1분 단위 반복
+    }, 1000 * 60 * 15); //15분 단위 반복
   });
 };
