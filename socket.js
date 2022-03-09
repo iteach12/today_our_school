@@ -69,24 +69,20 @@ let holiday_url = initApiUrl(
   process.env.DECODING_KEY
 );
 holiday_url += makeParams('solYear', year);
-holiday_url += makeParams('solMonth', month);
 holiday_url += makeParams('_type', 'json');
 function getHoliday() {
   axios
     .get(holiday_url)
     .then(async (response) => {
-      const result = await response;
-      console.log(result.data.response.body.items);
-      holiday = result.data.response.body.items;
-      // for (let i in result) {
-      //   //기온
-      //   if (result[i].category == 'SKY') {
-      //     console.log(
-      //       `관측시간 : ${result[i].baseTime} 하늘상태(SKY) : ${result[i].fcstValue}`
-      //     );
-      //     SKY_result = result[i].fcstValue;
-      //   }
-      // }
+      const result = await response.data.response.body.items.item;
+      for(let i in result){
+        if(result[i].locdate == today_date){
+          holiday = result[i].dateName;
+        }
+      }
+      console.log(holiday);
+
+      
     })
     .catch((err) => {
       console.log(err);
@@ -281,7 +277,10 @@ module.exports = (server) => {
 
     socket.emit('meal', neis_meal_info);
     socket.emit('dust', JSON.stringify(dust_result));
-    socket.emit('holiday', JSON.stringify(holiday));
+    if(holiday != null){
+      socket.emit('holiday', holiday);
+    }
+    
     socket.emit('T1H', T1H_result);
     socket.emit('PTY', PTY_result);
     socket.emit('REH', REH_result);
