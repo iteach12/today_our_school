@@ -195,22 +195,49 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script>
-      //로띠에 생성 여부 확인
-      let weather_lottie_switch = false;
-      function makeWeatherLottie(result){
-        if(!result){
-          let weather_lottie_parent = document.getElementById('weather_lottie_parent');
-          let weather_lottie = document.createElement('lottie-player');
-          weather_lottie.setAttribute('src', 'https://assets6.lottiefiles.com/packages/lf20_nMuEto.json');
-          weather_lottie.setAttribute('background','transparent');
-          weather_lottie.setAttribute('speed','1');
-          weather_lottie.setAttribute('class','w-44 h-44');
-          weather_lottie.setAttribute('loop', '');
-          weather_lottie.setAttribute('autoplay', '');
+      
+      function makeWeatherLottie(miseData){
           
-          weather_lottie_parent.appendChild(weather_lottie);
-          weather_lottie_switch = true;
-        }
+        //로띠에가 만들어져있지 않은 경우
+          if(!document.getElementById('lottie_weather')){
+            let weather_lottie_parent = document.getElementById('weather_lottie_parent');
+            let weather_lottie = document.createElement('lottie-player');
+            if(miseData){
+              weather_lottie.setAttribute('src', 'https://assets6.lottiefiles.com/packages/lf20_nMuEto.json');
+            }else{
+              weather_lottie.setAttribute('src', 'https://assets1.lottiefiles.com/packages/lf20_SIpqxt.json');
+            }
+            
+            weather_lottie.setAttribute('background','transparent');
+            weather_lottie.setAttribute('speed','1');
+            weather_lottie.setAttribute('class','w-44 h-44');
+            weather_lottie.setAttribute('id','lottie_weather');
+            weather_lottie.setAttribute('loop', '');
+            weather_lottie.setAttribute('autoplay', '');
+            
+            weather_lottie_parent.appendChild(weather_lottie);
+            
+          }else{
+            let weather_lottie_parent = document.getElementById('weather_lottie_parent');
+            let weather_lottie = document.getElementsById('lottie_weather');
+            weather_lottie_parent.removeChild(weather_lottie);
+            let new_weather_lottie = document.createElement('lottie_weather');
+            if(miseData){
+              new_weather_lottie.setAttribute('src', 'https://assets6.lottiefiles.com/packages/lf20_nMuEto.json');
+            }else{
+              new_weather_lottie.setAttribute('src', 'https://assets1.lottiefiles.com/packages/lf20_SIpqxt.json');
+            }
+
+            new_weather_lottie.setAttribute('background','transparent');
+            new_weather_lottie.setAttribute('speed','1');
+            new_weather_lottie.setAttribute('class','w-44 h-44');
+            new_weather_lottie.setAttribute('id','lottie_weather');
+            new_weather_lottie.setAttribute('loop', '');
+            new_weather_lottie.setAttribute('autoplay', '');
+
+          }
+          
+        
         }
 
 
@@ -270,7 +297,7 @@
         }
       });
 
-        socket.on('SKY', (data)=>{
+      socket.on('SKY', (data)=>{
         let statusSKY;
         switch(data){
           case '0', '1', '2', '3', '4', '5':
@@ -295,10 +322,23 @@
         const currentHolidayData = JSON.parse(data);
 
       })
+      
+      //미세먼지 데이터
+      let miseDustGrade;
+      
+      
       socket.on('dust', (data) => {
         const currentDustData = JSON.parse(data);
         let pm10GradeText;
         let pm25GradeText;
+        if(parseInt(currentDustData.pm10Grade1h) >= 3 || parseInt(currentDustData.pm25Grade1h) >= 3){
+          miseDustGrade = false;
+        }else{
+          miseDustGrade = true;
+        }
+
+        makeWeatherLottie(miseDustGrade);
+        
         switch(currentDustData.pm10Grade1h){
           case '1':
             pm10GradeText = `좋음`;
@@ -328,6 +368,8 @@
             break;
         }
         
+        
+
         if(currentDustData.pm10Value != null){
           document.querySelector('#dust_mise').textContent = `${currentDustData.pm10Value} ㎍/㎥`;
         }
