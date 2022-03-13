@@ -70,7 +70,6 @@ let holiday_url = initApiUrl(
   process.env.DECODING_KEY
 );
 holiday_url += makeParams('solYear', year);
-holiday_url += makeParams('solMonth', month);
 holiday_url += makeParams('_type', 'json');
 function getHoliday() {
   axios

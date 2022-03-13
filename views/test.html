@@ -135,6 +135,7 @@
       <content class="flex max-h-full space-x-4 w-4/5 p-16 bg-sectioncolor">
         <section class="flex-col space-y-8 max-h-full w-2/3 static">
           <div class="h-1/2 bg-white p-8 relative">
+
             <div class="title_border align-middle"><h1 class="card_title_text align-middle">오늘 우리 학교는?</h1></div>
             <div>
               <ul class="list-disc">
@@ -144,8 +145,14 @@
               
             </div>
             
+
             <div class="absolute  bottom-0 right-0">
               <lottie-player src="https://assets1.lottiefiles.com/packages/lf20_K7aZUG.json"  background="transparent"  speed="1"   loop  autoplay style="width:450px; height:450px;"></lottie-player>
+            </div>
+            <div>
+              <ul id="holiday_ul" class="list-disc text-gray-900 text-4xl font-normal ml-8 mt-4">
+
+              </ul>
             </div>
           </div>
           <div class="flex space-x-4 w-full h-1/2">
@@ -215,22 +222,49 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script>
-      //로띠에 생성 여부 확인
-      let weather_lottie_switch = false;
-      function makeWeatherLottie(result){
-        if(!result){
-          let weather_lottie_parent = document.getElementById('weather_lottie_parent');
-          let weather_lottie = document.createElement('lottie-player');
-          weather_lottie.setAttribute('src', 'https://assets6.lottiefiles.com/packages/lf20_nMuEto.json');
-          weather_lottie.setAttribute('background','transparent');
-          weather_lottie.setAttribute('speed','1');
-          weather_lottie.setAttribute('class','w-44 h-44');
-          weather_lottie.setAttribute('loop', '');
-          weather_lottie.setAttribute('autoplay', '');
+      
+      function makeWeatherLottie(miseData){
           
-          weather_lottie_parent.appendChild(weather_lottie);
-          weather_lottie_switch = true;
-        }
+        //로띠에가 만들어져있지 않은 경우
+          if(!document.getElementById('lottie_weather')){
+            let weather_lottie_parent = document.getElementById('weather_lottie_parent');
+            let weather_lottie = document.createElement('lottie-player');
+            if(miseData){
+              weather_lottie.setAttribute('src', 'https://assets6.lottiefiles.com/packages/lf20_nMuEto.json');
+            }else{
+              weather_lottie.setAttribute('src', 'https://assets1.lottiefiles.com/packages/lf20_SIpqxt.json');
+            }
+            
+            weather_lottie.setAttribute('background','transparent');
+            weather_lottie.setAttribute('speed','1');
+            weather_lottie.setAttribute('class','w-44 h-44');
+            weather_lottie.setAttribute('id','lottie_weather');
+            weather_lottie.setAttribute('loop', '');
+            weather_lottie.setAttribute('autoplay', '');
+            
+            weather_lottie_parent.appendChild(weather_lottie);
+            
+          }else{
+            let weather_lottie_parent = document.getElementById('weather_lottie_parent');
+            let weather_lottie = document.getElementsById('lottie_weather');
+            weather_lottie_parent.removeChild(weather_lottie);
+            let new_weather_lottie = document.createElement('lottie_weather');
+            if(miseData){
+              new_weather_lottie.setAttribute('src', 'https://assets6.lottiefiles.com/packages/lf20_nMuEto.json');
+            }else{
+              new_weather_lottie.setAttribute('src', 'https://assets1.lottiefiles.com/packages/lf20_SIpqxt.json');
+            }
+
+            new_weather_lottie.setAttribute('background','transparent');
+            new_weather_lottie.setAttribute('speed','1');
+            new_weather_lottie.setAttribute('class','w-44 h-44');
+            new_weather_lottie.setAttribute('id','lottie_weather');
+            new_weather_lottie.setAttribute('loop', '');
+            new_weather_lottie.setAttribute('autoplay', '');
+
+          }
+          
+        
         }
 
 
@@ -239,6 +273,7 @@
         transports: ['websocket'],
       });
       
+
       socket.on('schedule', (today_schedule, dateOfPresentation, dateOfSportsDay, dateOfSwim, dateOfProjectPresentation)=>{
         //오늘의 스케쥴이 null이 아닐 때만 생성
         if(today_schedule != null)  {
@@ -266,6 +301,7 @@
         li.appendChild(textNode);
         document.getElementById('d_day').appendChild(li);
       }
+
 
 
       socket.on('T1H', (data)=>{
@@ -319,7 +355,7 @@
         }
       });
 
-        socket.on('SKY', (data)=>{
+      socket.on('SKY', (data)=>{
         let statusSKY;
         switch(data){
           case '0', '1', '2', '3', '4', '5':
@@ -341,13 +377,28 @@
       });
 
       socket.on('holiday', (data)=>{
+
         const currentHolidayData = data;
 
+
       })
+      
+      //미세먼지 데이터
+      let miseDustGrade;
+      
+      
       socket.on('dust', (data) => {
         const currentDustData = data;
         let pm10GradeText;
         let pm25GradeText;
+        if(parseInt(currentDustData.pm10Grade1h) >= 3 || parseInt(currentDustData.pm25Grade1h) >= 3){
+          miseDustGrade = false;
+        }else{
+          miseDustGrade = true;
+        }
+
+        makeWeatherLottie(miseDustGrade);
+        
         switch(currentDustData.pm10Grade1h){
           case '1':
             pm10GradeText = `좋음`;
@@ -377,6 +428,8 @@
             break;
         }
         
+        
+
         if(currentDustData.pm10Value != null){
           document.querySelector('#dust_mise').textContent = `${currentDustData.pm10Value} ㎍/㎥`;
         }
@@ -396,14 +449,13 @@
 
         }
         
+        //미세먼지 등급에 따라 로띠에 얼굴 변경.
         makeWeatherLottie(weather_lottie_switch);
         socket.emit('reply', '미세먼지 데이터 연결됨');
       });
      
       let isWritten = false;
       socket.on('meal', (data) => {
-        
-
         if(!isWritten){
         if(data == '오늘은 급식 없는 날!!'){
           const li = document.createElement("li");
@@ -427,8 +479,9 @@
         }
         isWritten = true;
         }
+
         
-        socket.emit('reply', '급식 정보연결됨');
+
       });
 
       
@@ -477,6 +530,7 @@
           clock.textContent = `${hour}시 ${minutes<10 ? `0${minutes}`:minutes}분 ${seconds<10 ? `0${seconds}`:seconds}초`;
           
 
+          //리팩토링
           if(hour == 9){
           if(minutes < 10){
               timetable.textContent = `- 아침활동 -`;
@@ -526,11 +580,6 @@
               timetable.textContent = `- 에듀버스 탑승 -`;
             }
           }
-
-
-
-          
-
       }
       
       //인터벌 생성. 1초마다 반복
