@@ -24,7 +24,8 @@ function getWeatherTime(url) {
     } else {
       return hours;
     }
-  } else {
+  }
+  if (url == forcast_weather_base_url) {
     const hours = ('0' + today.getHours()).slice(-2) + '30';
     const hours_minus_1 = ('0' + (today.getHours() - 1)).slice(-2) + '30';
     if (today.getMinutes() < 45) {
@@ -76,17 +77,9 @@ function getHoliday() {
     .get(holiday_url)
     .then(async (response) => {
       const result = await response;
+
       console.log(result.data.response.body.items);
       holiday = result.data.response.body.items;
-      // for (let i in result) {
-      //   //기온
-      //   if (result[i].category == 'SKY') {
-      //     console.log(
-      //       `관측시간 : ${result[i].baseTime} 하늘상태(SKY) : ${result[i].fcstValue}`
-      //     );
-      //     SKY_result = result[i].fcstValue;
-      //   }
-      // }
     })
     .catch((err) => {
       console.log(err);
@@ -100,7 +93,7 @@ let now_weather_base_url =
 let weather_url = initApiUrl(
   now_weather_base_url,
   'serviceKey',
-  process.env.OPEN_KEY
+  process.env.DECODING_KEY
 );
 weather_url += makeParams('pageNo', '1');
 weather_url += makeParams('numOfRows', '1000');
@@ -126,6 +119,7 @@ function getNowWeather() {
   axios
     .get(weather_url)
     .then(async (response) => {
+      //console.log('초단기실황', response);
       const result = await response.data.response.body.items.item;
 
       for (let i in result) {
@@ -144,7 +138,7 @@ function getNowWeather() {
         }
         if (result[i].category == 'REH') {
           console.log(
-            `관측시간 : ${result[i].baseTime} 1시간강수량(REH) : ${result[i].obsrValue}`
+            `관측시간 : ${result[i].baseTime} 습도(REH) : ${result[i].obsrValue}`
           );
           REH_result = result[i].obsrValue;
         }
@@ -162,7 +156,7 @@ let forcast_weather_base_url =
 let forcast_url = initApiUrl(
   forcast_weather_base_url,
   'serviceKey',
-  process.env.OPEN_KEY
+  process.env.DECODING_KEY
 );
 forcast_url += makeParams('pageNo', '1');
 forcast_url += makeParams('numOfRows', '1000');
@@ -181,6 +175,7 @@ function getForcastWeather() {
   axios
     .get(forcast_url)
     .then(async (response) => {
+      //console.log('초단기예보', response);
       const result = await response.data.response.body.items.item;
 
       for (let i in result) {
@@ -236,19 +231,71 @@ const mySchool = '7891019';
 //기본 호출 url 작성하기
 const basic_request_url = 'https://open.neis.go.kr/hub/mealServiceDietInfo?';
 
-//테스트용 급식 파싱 url
+//급식 파싱 url
 let url = `${basic_request_url}&Key=${process.env.NEIS_KEY}&Type=json&pIndex=1&pSize=1&ATPT_OFCDC_SC_CODE=${gangwondo}&SD_SCHUL_CODE=${mySchool}&MLSV_YMD=${today_date}`;
+
+let school_schedule_url = 'https://open.neis.go.kr/hub/SchoolSchedule?';
+
+//학사일정 파싱 url
+let schedule_url = `${school_schedule_url}&Key=${process.env.NEIS_KEY}&Type=json&pIndex=1&pSize=100&ATPT_OFCDC_SC_CODE=${gangwondo}&SD_SCHUL_CODE=${mySchool}&AA_YMD=2022`;
+
+let today_schedule;
+let dateOfPresentation;
+let dateOfSportsDay;
+let dateOfSwim;
+let dateOfProjectPresentation;
+
+const get_schedule_info = () => {
+  axios
+    .get(schedule_url)
+    .then(async (res) => {
+      const result = res.data.SchoolSchedule[1].row;
+
+      for (let i in result) {
+        if (result[i].AA_YMD == today_date) {
+          console.log('오늘의 행사: ', result[i].EVENT_NM);
+          today_schedule = result[i].EVENT_NM;
+        }
+
+        if (result[i].EVENT_NM == '1차 교육과정 설명회 및 학부모 총회') {
+          dateOfPresentation = result[i].AA_YMD;
+        }
+        if (result[i].EVENT_NM == '운동회') {
+          dateOfSportsDay = result[i].AA_YMD;
+        }
+        if (result[i].EVENT_NM == '생존수영') {
+          if (dateOfSwim == undefined) {
+            dateOfSwim = result[i].AA_YMD;
+          }
+        }
+        if (result[i].EVENT_NM == '프로젝트 발표회') {
+          dateOfProjectPresentation = result[i].AA_YMD;
+        }
+      }
+      console.log(`1차 교육과정 설명회 및 학부모 총회 : ${dateOfPresentation}`);
+      console.log(`운동회 : ${dateOfSportsDay}`);
+      console.log(`생존수영 : ${dateOfSwim}`);
+      console.log(`프로젝트 발표회 : ${dateOfProjectPresentation}`);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
 
 //neis 급식 데이터 가져오기
 function parsing_json(obj) {
-  let meal_data_str = obj.data.mealServiceDietInfo[1].row[0].DDISH_NM;
-  //숫자 제거 정규식
-  meal_data_str = meal_data_str.replace(/[0-9]/g, '');
+  if (obj.data.mealServiceDietInfo[1] == null) {
+    return null;
+  } else {
+    let meal_data_str = obj.data.mealServiceDietInfo[1].row[0].DDISH_NM;
+    //숫자 제거 정규식
+    meal_data_str = meal_data_str.replace(/[0-9]/g, '');
 
-  //마침표 제거 정규식
-  //마침표가 특수문자라 \역슬래시를 넣어줘야 했음.
-  meal_data_str = meal_data_str.replace(/\./g, '');
-  return meal_data_str;
+    //마침표 제거 정규식
+    //마침표가 특수문자라 \역슬래시를 넣어줘야 했음.
+    meal_data_str = meal_data_str.replace(/\./g, '');
+    return meal_data_str;
+  }
 }
 
 let neis_meal_info;
@@ -265,6 +312,7 @@ const get_meal_info = () => {
     });
 };
 
+get_schedule_info();
 get_meal_info();
 getNowWeather();
 getForcastWeather();
@@ -280,12 +328,20 @@ module.exports = (server) => {
     console.log('새로운 클라이언트 접속!', ip, socket.id, req.ip);
 
     socket.emit('meal', neis_meal_info);
-    socket.emit('dust', JSON.stringify(dust_result));
-    socket.emit('holiday', JSON.stringify(holiday));
+    socket.emit('dust', dust_result);
+    socket.emit('holiday', holiday);
     socket.emit('T1H', T1H_result);
     socket.emit('PTY', PTY_result);
     socket.emit('REH', REH_result);
     socket.emit('SKY', SKY_result);
+    socket.emit(
+      'schedule',
+      today_schedule,
+      dateOfPresentation,
+      dateOfSportsDay,
+      dateOfSwim,
+      dateOfProjectPresentation
+    );
 
     socket.on('disconnect', () => {
       console.log('클라이언트 접속 해제', ip, socket.id);
@@ -311,7 +367,7 @@ module.exports = (server) => {
       getNowDust();
 
       //소켓 전송하기
-      socket.emit('dust', JSON.stringify(dust_result));
+      socket.emit('dust', dust_result);
       socket.emit('T1H', T1H_result);
       socket.emit('PTY', PTY_result);
       socket.emit('REH', REH_result);

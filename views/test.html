@@ -30,33 +30,38 @@
           </div>
           
           <div class="flex justify-center mt-8">
-            <table  style="border-collapse: separate;
+            <table  style="
+            border-collapse: separate;
             border-spacing: 1px;
             text-align: center;
             line-height: 1.5;
             border-top: 1px solid #ccc;
             margin : 20px 10px 1px 10px;">
               <tr>
-                <th  rowspan="2" scope="row" style="width: 170px;
+                <th  rowspan="2" scope="row" style="
+                width: 170px;
                 padding: 10px;
                 font-weight: bold;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc; vertical-align:middle;" class="table_head_text">미세먼지</th>
                 
-                <td id="dust_mise_grade" style="width: 250px;
+                <td id="dust_mise_grade" style="
+                width: 250px;
                 padding: 10px;
                 vertical-align: top;
                 " align="center">보통 </td>
 
               </tr>
               <tr>
-                <td id="dust_mise" style="width: 250px;
+                <td id="dust_mise" style="
+                width: 250px;
                 padding: 10px;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" align="center">30cm</td>
               </tr>
               <tr>
-                <th rowspan="2" scope="row" style="width: 170px;
+                <th rowspan="2" scope="row" style="
+                width: 170px;
                 padding: 10px;
                 font-weight: bold;
                 vertical-align: top;
@@ -67,7 +72,8 @@
                 " align="center">보통 </td>
               </tr>
               <tr>
-                <td id="dust_cho_mise" style="width: 250px;
+                <td id="dust_cho_mise" style="
+                width: 250px;
                 padding: 10px;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" align="center">30ym</td>
@@ -75,34 +81,40 @@
 
 
               <tr>
-                <th scope="row" style="width: 170px;
+                <th scope="row" style="
+                width: 170px;
                 padding: 10px;
                 font-weight: bold;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" class="table_head_text">현재기온</th>
-                <td style="width: 250px;
+                <td style="
+                width: 250px;
                 padding: 10px;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" align="center" id="T1H">-10</td>
               </tr>
               <tr>
-                <th scope="row" style="width: 170px;
+                <th scope="row" style="
+                width: 170px;
                 padding: 10px;
                 font-weight: bold;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" class="table_head_text">하늘상태</th>
-                <td style="width: 250px;
+                <td style="
+                width: 250px;
                 padding: 10px;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" align="center" id="PTY">빗방울</td>
               </tr>
               <tr>
-                <th scope="row" style="width: 170px;
+                <th scope="row" style="
+                width: 170px;
                 padding: 10px;
                 font-weight: bold;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" align="center" class="table_head_text">습도</th>
-                <td style="width: 250px;
+                <td style="
+                width: 250px;
                 padding: 10px;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" align="center" id="REH">25.2mm</td>
@@ -124,6 +136,14 @@
         <section class="flex-col space-y-8 max-h-full w-2/3 static">
           <div class="h-1/2 bg-white p-8 relative">
             <div class="title_border align-middle"><h1 class="card_title_text align-middle">오늘 우리 학교는?</h1></div>
+            <div>
+              <ul class="list-disc">
+                <ul id="schedule" class="list-disc text-gray-900 text-4xl font-normal ml-8 mt-4"></ul>
+                <ul id="d_day" class="list-none text-gray-900 text-4xl font-normal ml-8 mt-16">[D-DAY]</ul>
+              </ul>
+              
+            </div>
+            
             <div class="absolute  bottom-0 right-0">
               <lottie-player src="https://assets1.lottiefiles.com/packages/lf20_K7aZUG.json"  background="transparent"  speed="1"   loop  autoplay style="width:450px; height:450px;"></lottie-player>
             </div>
@@ -184,7 +204,7 @@
             <div class="flex flex-col justify-center w-full h-5/6 text-center" >
              
               <div id="my_clock" class="text-6xl"></div>
-              <div id="timetable" class="mt-4 text-3xl">1교시 중</div>
+              <div id="timetable" class="mt-4 text-3xl"></div>
               
             </div>
           </div>
@@ -219,6 +239,35 @@
         transports: ['websocket'],
       });
       
+      socket.on('schedule', (today_schedule, dateOfPresentation, dateOfSportsDay, dateOfSwim, dateOfProjectPresentation)=>{
+        //오늘의 스케쥴이 null이 아닐 때만 생성
+        if(today_schedule != null)  {
+          const li = document.createElement("li");
+          const textNode = document.createTextNode(today_schedule);
+          li.appendChild(textNode);
+          document.getElementById('schedule').appendChild(li);
+        }
+        getDdayString(dateOfPresentation, '교육과정 설명회');
+        getDdayString(dateOfSportsDay, '운동회');
+        getDdayString(dateOfSwim, '생존수영');
+        getDdayString(dateOfProjectPresentation, '프로젝트 발표회');
+      });
+
+      //DDAY 뽑아내기
+      function getDdayString(str, schedule){
+        const setDate = new Date(`${str.slice(0,4)}-${str.slice(4,6)}-${str.slice(6)}T00:00:00+0900`);
+        const nowDate = new Date();
+        const distance = setDate.getTime() - nowDate.getTime();
+        const day = Math.floor(distance/(1000*60*60*24));
+
+        const li = document.createElement('li');
+        li.setAttribute('class', 'mt-2');
+        const textNode = document.createTextNode(`${schedule}(D- ${day}일)`);
+        li.appendChild(textNode);
+        document.getElementById('d_day').appendChild(li);
+      }
+
+
       socket.on('T1H', (data)=>{
         
         if(data != null){
@@ -292,11 +341,11 @@
       });
 
       socket.on('holiday', (data)=>{
-        const currentHolidayData = JSON.parse(data);
+        const currentHolidayData = data;
 
       })
       socket.on('dust', (data) => {
-        const currentDustData = JSON.parse(data);
+        const currentDustData = data;
         let pm10GradeText;
         let pm25GradeText;
         switch(currentDustData.pm10Grade1h){
@@ -378,9 +427,6 @@
         }
         isWritten = true;
         }
-        
-
-
         
         socket.emit('reply', '급식 정보연결됨');
       });
