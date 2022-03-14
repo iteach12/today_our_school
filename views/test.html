@@ -17,10 +17,10 @@
           <img src="./img/logo.png" alt="logo" class="w-36 h-32"></img>
         </div>
         <div class="flex-col mt-6">
-          <p style="text-align:center" class="text-white font-bold text-6xl mb-2">오늘도 행복한</p>
-          <p style="text-align:center" class="font-bold text-6xl text-[#F7B9B2]">서원초등학교</p>
+          <p style="text-align:center" class="text-white font-bold text-4xl mb-2">오늘도 행복한</p>
+          <p style="text-align:center" class="font-bold text-4xl text-[#F7B9B2]">서원초등학교</p>
         </div>
-        <div class="flex-col  bg-white w-auto h-3/5 mt-14 mx-8 p-8">
+        <div class="flex-col  bg-white w-auto h-3/5 mt-8 mx-8 p-8">
           <div class="title_border"><h1 class="card_title_text">오늘의 날씨</h1></div>
           <div class="flex justify-center mt-8" id="weather_lottie_parent">
             <!-- <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_nMuEto.json"  background="transparent"  speed="1" loop autoplay class="w-44 h-44"></lottie-player> -->
@@ -39,42 +39,42 @@
             margin : 20px 10px 1px 10px;">
               <tr>
                 <th  rowspan="2" scope="row" style="
-                width: 170px;
-                padding: 10px;
+                width: 250px;
+                padding: 2px;
                 font-weight: bold;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc; vertical-align:middle;" class="table_head_text">미세먼지</th>
                 
                 <td id="dust_mise_grade" style="
-                width: 250px;
-                padding: 10px;
+                width: 170px;
+                padding: 2px;
                 vertical-align: top;
                 " align="center">보통 </td>
 
               </tr>
               <tr>
                 <td id="dust_mise" style="
-                width: 250px;
-                padding: 10px;
+                width: 170px;
+                padding: 2px;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" align="center">30cm</td>
               </tr>
               <tr>
                 <th rowspan="2" scope="row" style="
-                width: 170px;
-                padding: 10px;
+                width: 250px;
+                padding: 2px;
                 font-weight: bold;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc; vertical-align:middle;" class="table_head_text">초미세먼지</th>
-                <td id="dust_cho_mise_grade" style="width: 250px;
-                padding: 10px;
+                <td id="dust_cho_mise_grade" style="width: 170px;
+                padding: 2px;
                 vertical-align: top;
                 " align="center">보통 </td>
               </tr>
               <tr>
                 <td id="dust_cho_mise" style="
-                width: 250px;
-                padding: 10px;
+                width: 170px;
+                padding: 2px;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" align="center">30ym</td>
               </tr>
@@ -82,40 +82,40 @@
 
               <tr>
                 <th scope="row" style="
-                width: 170px;
-                padding: 10px;
+                width: 250px;
+                padding: 2px;
                 font-weight: bold;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" class="table_head_text">현재기온</th>
                 <td style="
-                width: 250px;
-                padding: 10px;
+                width: 170px;
+                padding: 2px;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" align="center" id="T1H">-10</td>
               </tr>
               <tr>
                 <th scope="row" style="
-                width: 170px;
-                padding: 10px;
+                width: 250px;
+                padding: 2px;
                 font-weight: bold;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" class="table_head_text">하늘상태</th>
                 <td style="
-                width: 250px;
-                padding: 10px;
+                width: 170px;
+                padding: 2px;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" align="center" id="PTY">빗방울</td>
               </tr>
               <tr>
                 <th scope="row" style="
-                width: 170px;
-                padding: 10px;
+                width: 250px;
+                padding: 2px;
                 font-weight: bold;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" align="center" class="table_head_text">습도</th>
                 <td style="
-                width: 250px;
-                padding: 10px;
+                width: 170px;
+                padding: 2px;
                 vertical-align: top;
                 border-bottom: 1px solid #ccc;" align="center" id="REH">25.2mm</td>
               </tr>
@@ -237,7 +237,7 @@
             
             weather_lottie.setAttribute('background','transparent');
             weather_lottie.setAttribute('speed','1');
-            weather_lottie.setAttribute('class','w-44 h-44');
+            weather_lottie.setAttribute('class','w-32 h-32');
             weather_lottie.setAttribute('id','lottie_weather');
             weather_lottie.setAttribute('loop', '');
             weather_lottie.setAttribute('autoplay', '');
@@ -257,7 +257,7 @@
 
             new_weather_lottie.setAttribute('background','transparent');
             new_weather_lottie.setAttribute('speed','1');
-            new_weather_lottie.setAttribute('class','w-44 h-44');
+            new_weather_lottie.setAttribute('class','w-32 h-32');
             new_weather_lottie.setAttribute('id','lottie_weather');
             new_weather_lottie.setAttribute('loop', '');
             new_weather_lottie.setAttribute('autoplay', '');
@@ -486,28 +486,35 @@
 
       
       //오늘 메인 날짜
-      const my_Date = new Date();
-      const myYear = my_Date.getFullYear();
-      const myMonth = my_Date.getMonth()+1;
-      const myDate = my_Date.getDate();
-      const myDay = getMyDay();
+      let my_Date = new Date();
+      let myYear = my_Date.getFullYear();
+      let myMonth = my_Date.getMonth()+1;
+      let myDate = my_Date.getDate();
+      let myDay = getMyDay();
       function getMyDay(){
         let result;
         switch(my_Date.getDay()){
           case 0:
           result = '일요일';
+          break;
           case 1:
           result = '월요일';
+          break;
           case 2:
           result = '화요일';
+          break;
           case 3:
           result = '수요일';
+          break;
           case 4:
           result = '목요일';
+          break;
           case 5:
           result = '금요일';
+          break;
           case 6:
           result = '토요일';
+          break;
         }
         return result;
         
