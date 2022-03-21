@@ -374,6 +374,6 @@ module.exports = (server) => {
       socket.emit('PTY', PTY_result);
       socket.emit('REH', REH_result);
       socket.emit('SKY', SKY_result);
-    }, 1000 * 1 * 10); //15분 단위 반복
+    }, 1000 * 60 * 10); //15분 단위 반복
   });
 };

@@ -26,7 +26,9 @@
             <!-- <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_nMuEto.json"  background="transparent"  speed="1" loop autoplay class="w-44 h-44"></lottie-player> -->
           </div>
           <div class="flex justify-center mt-4">
-            <h1 class="font-bold text-2xl"></h1>
+            <h1 id="weather_text" class="font-bold text-2xl">
+              오늘 날씨는 화창해요
+            </h1>
           </div>
           
           <div class="flex justify-center mt-8">
@@ -223,6 +225,7 @@
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script>
       
+      //페이지 새로고침
       setTimeout(function(){
         location.reload(true);
       },1000 * 60 * 15); // 3000밀리초 = 3초
@@ -326,9 +329,10 @@
         }
         
       });
-
+      
+      let statusPTY;
       socket.on('PTY', (data)=>{
-        let statusPTY;
+        
         switch(data){
           case '0':
             statusPTY = '비 없음';
@@ -357,10 +361,18 @@
           document.querySelector('#PTY').textContent = `${statusPTY}`;
           socket.emit('reply', 'PTY(강수형태) 연결됨');
         }
-      });
 
+        if(statusPTY == '비 없음' && miseDustGrade == true){
+          weather_text.textContent = '화창한 날이네요. 운동장으로 나가볼까요?';
+        }else{
+          weather_text.textContent = '하늘이 뿌옇게 변했어요. 교실에서 친구들과 사이좋게 놀아요.';
+        }
+      });
+      
+      
+      
       socket.on('SKY', (data)=>{
-        let statusSKY;
+        let statusSKY;  
         switch(data){
           case '0', '1', '2', '3', '4', '5':
             statusSKY = '맑음';
@@ -373,7 +385,7 @@
             break;
           
         }
-        // document.querySelector('#SKY').textContent = `${statusSKY}`;
+        
         if(statusSKY != null){
           socket.emit('reply', 'SKY(하늘상태) 연결됨');
         }
@@ -389,7 +401,7 @@
       
       //미세먼지 데이터
       let miseDustGrade;
-      
+      let weather_text = document.querySelector('#weather_text');
       
       socket.on('dust', (data) => {
         const currentDustData = data;
@@ -397,8 +409,10 @@
         let pm25GradeText;
         if(parseInt(currentDustData.pm10Grade1h) >= 3 || parseInt(currentDustData.pm25Grade1h) >= 3){
           miseDustGrade = false;
+          
         }else{
           miseDustGrade = true;
+         
         }
 
         makeWeatherLottie(miseDustGrade);
@@ -458,6 +472,12 @@
         socket.emit('reply', '미세먼지 데이터 연결됨');
       });
      
+
+      
+      
+      
+
+
       let isWritten = false;
       socket.on('meal', (data) => {
         if(!isWritten){
