@@ -120,7 +120,7 @@ function getNowWeather() {
     .then(async (response) => {
       //console.log('초단기실황', response);
       const result = await response.data.response.body.items.item;
-
+      console.log(result);
       for (let i in result) {
         //기온
         if (result[i].category == 'T1H') {
@@ -365,12 +365,15 @@ module.exports = (server) => {
       //미세먼지 정보 가져오기
       getNowDust();
 
+      get_meal_info();
+
+      getNowDust();
       //소켓 전송하기
       socket.emit('dust', dust_result);
       socket.emit('T1H', T1H_result);
       socket.emit('PTY', PTY_result);
       socket.emit('REH', REH_result);
       socket.emit('SKY', SKY_result);
-    }, 1000 * 60 * 15); //15분 단위 반복
+    }, 1000 * 1 * 10); //15분 단위 반복
   });
 };

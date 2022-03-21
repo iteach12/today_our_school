@@ -223,6 +223,10 @@
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script>
       
+      setTimeout(function(){
+        location.reload(true);
+      },1000 * 60 * 15); // 3000밀리초 = 3초
+
       function makeWeatherLottie(miseData){
           
         //로띠에가 만들어져있지 않은 경우
@@ -434,14 +438,14 @@
           document.querySelector('#dust_mise').textContent = `${currentDustData.pm10Value} ㎍/㎥`;
         }
         
-        if(currentDustData.pm10GradeText != null){
+        if(currentDustData.pm10Grade1h != null){
           document.querySelector('#dust_mise_grade').textContent = `${pm10GradeText}`;
         }
         
         if(currentDustData.pm25Value != null){
           document.querySelector('#dust_cho_mise').textContent = `${currentDustData.pm25Value} ㎍/㎥`;
         }
-        if(currentDustData.pm25GradeText != null){
+        if(currentDustData.pm25Grade1h != null){
           document.querySelector('#dust_cho_mise_grade').textContent = `${pm25GradeText}`;
         }
         if(currentDustData.dataTime != null){
