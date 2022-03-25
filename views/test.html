@@ -26,7 +26,7 @@
             <!-- <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_nMuEto.json"  background="transparent"  speed="1" loop autoplay class="w-44 h-44"></lottie-player> -->
           </div>
           <div class="flex justify-center mt-4">
-            <h1 id="weather_text" class="font-bold text-2xl">
+            <h1 id="weather_text" class="font-bold text-2xl align text-center">
               오늘 날씨는 화창해요
             </h1>
           </div>
@@ -281,7 +281,7 @@
       });
       
 
-      socket.on('schedule', (today_schedule, dateOfPresentation, dateOfSportsDay, dateOfSwim, dateOfProjectPresentation)=>{
+      socket.on('schedule', (today_schedule, dateOfSportsDay, dateOfSwim, dateOfProjectPresentation)=>{
         //오늘의 스케쥴이 null이 아닐 때만 생성
         if(today_schedule != null)  {
           const li = document.createElement("li");
@@ -289,7 +289,7 @@
           li.appendChild(textNode);
           document.getElementById('schedule').appendChild(li);
         }
-        getDdayString(dateOfPresentation, '교육과정 설명회');
+        // getDdayString(dateOfPresentation, '교육과정 설명회');
         getDdayString(dateOfSportsDay, '운동회');
         getDdayString(dateOfSwim, '생존수영');
         getDdayString(dateOfProjectPresentation, '프로젝트 발표회');
@@ -468,6 +468,7 @@
         }
         
         //미세먼지 등급에 따라 로띠에 얼굴 변경.
+        
         
         socket.emit('reply', '미세먼지 데이터 연결됨');
       });

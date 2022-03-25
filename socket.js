@@ -336,7 +336,6 @@ module.exports = (server) => {
     socket.emit(
       'schedule',
       today_schedule,
-      dateOfPresentation,
       dateOfSportsDay,
       dateOfSwim,
       dateOfProjectPresentation
