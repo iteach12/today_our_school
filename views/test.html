@@ -486,6 +486,7 @@
         //만약 급식 데이터가 있었다면 모두 삭제하기.
         while (meal_doc.hasChildNodes()) {
         div.removeChild(meal_doc.firstChild);
+        console.log('급식 메뉴 삭제됐음.');
         }
 
         /*
@@ -609,19 +610,34 @@
               timetable.textContent = `- 6교시 -`;
             }
           }else if(hour == 2){
-            if(minutes < 30){
+            //금요일이라면 에듀버스 2시 31분부터 탑승준비
+            if(myDay == '금요일'){
+              if(minutes < 30){
+                timetable.textContent = `- 6교시 -`;
+              }else if(minutes >= 31 && minutes < 59){
+                timetable.textContent = `- 에듀버스 탑승 -`;
+              }  
+            }else{
+            //금요일이 아니라면 
+              if(minutes < 30){
               timetable.textContent = `- 6교시 -`;
-            }else if(minutes >= 40){
-              timetable.textContent = `- 방과후 7교시 -`;
+              }else if(minutes >= 40){
+                timetable.textContent = `- 방과후 7교시 -`;
+              }
             }
           }else if(hour == 3){
-            if(minutes <= 20){
-              timetable.textContent = `- 방과후 7교시 -`;
-            }else if(minutes > 20 && minutes <=50){
-              timetable.textContent = `- 방과후 8교시 -`;
+            if(myDay == '금요일'){
+              timetable.textContent = ``;
             }else{
-              timetable.textContent = `- 에듀버스 탑승 -`;
+              if(minutes <= 20){
+              timetable.textContent = `- 방과후 7교시 -`;
+              }else if(minutes > 20 && minutes <=50){
+                timetable.textContent = `- 방과후 8교시 -`;
+              }else{
+                timetable.textContent = `- 에듀버스 탑승 -`;
+              }
             }
+            
           }
       }
       
