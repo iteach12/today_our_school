@@ -176,6 +176,13 @@
               <div class="absolute bottom-0 right-0">
                 <lottie-player src="https://assets9.lottiefiles.com/private_files/lf30_nmraqqu5.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
               </div>
+              <div>
+                <ul class="list-disc">
+                  <ul id="birth_day" class="list-disc text-gray-900 text-4xl font-normal ml-8 mt-4">[생일]</ul>
+                  <ul id="our_comment" class="list-disc text-gray-900 text-4xl font-normal ml-8 mt-4">[우리들의 한 마디]</ul>
+                  
+                </ul>
+              </div>
             </div>
           </div>
         </section>
@@ -522,12 +529,20 @@
       });
 
       
+
+      
       //오늘 메인 날짜
       let my_Date = new Date();
       let myYear = my_Date.getFullYear();
       let myMonth = my_Date.getMonth()+1;
       let myDate = my_Date.getDate();
       let myDay = getMyDay();
+
+      //생일용 날짜 뽑기 0302
+      let birthday_month = ('0' + (my_Date.getMonth() + 1)).slice(-2);
+      let birthday_day = ('0' + my_Date.getDate()).slice(-2);
+      let birthday_date_today = birthday_month + birthday_day;
+
       function getMyDay(){
         let result;
         switch(my_Date.getDay()){
@@ -653,13 +668,35 @@
       const today_english = getContentFromTxt('./text/english_word.txt');
       const today_phrase = getContentFromTxt('./text/phrase.txt');
       const today_quote = getContentFromTxt('./text/quote.txt');
+      const today_birthday = getBirthdayFromTxt('./text/birthday.txt');
 
       //엘레멘트 가져오기
       const quote = document.querySelector('#quote'); //명언
       const quote_author = document.querySelector('#quote_author'); //명언 말한 사람
       const gongbu = document.querySelector('#gongbu'); //영어단어
       const mean = document.querySelector('#mean'); //영단어 뜻
+      const birthday = document.querySelector('#birth_day'); //생일 ul
       
+      //생일 넣기
+      
+
+      for(let i in today_birthday){
+        if(today_birthday[i].includes(birthday_date_today)){
+          let birthday_name = today_birthday[i].split('*')[0];
+          
+          const li = document.createElement("li");
+          const textNode = document.createTextNode(birthday_name);
+          li.appendChild(textNode);
+          birthday.appendChild(li);
+        }
+      }
+      //만약 오늘 생일자가 없다면
+      //생일자가 없음을 안내해 줌.
+      if(!birthday.hasChildNodes()){
+          
+        console.log('자식 노드가 없습니다. 생일');
+        birthday.style.visibility = "hidden";
+      }
 
       //명언 넣기
       quote.textContent = `${today_quote.split('*')[0]}`;
@@ -701,6 +738,20 @@
         result_array = content.split('\n');
       }
       return result_array[Math.floor(Math.random() * result_array.length)];
+      }
+
+      function getBirthdayFromTxt(url){
+        let content = null;
+        let reault_array;
+        let xmlhttp = new XMLHttpRequest();
+        xmlhttp.open('GET', url, false);
+        xmlhttp.send();
+        //파일 로드 성공 시 파일에서 읽은 테스트를 content에 담음
+        if(xmlhttp.status == 200){
+          content = xmlhttp.responseText;
+          result_array = content.split('\n');
+        }
+        return result_array;
       }
       
       
