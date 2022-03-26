@@ -479,18 +479,29 @@
       
 
 
-      let isWritten = false;
+      
       socket.on('meal', (data) => {
-        if(!isWritten){
+        const meal_doc = document.getElementById('meal_info');
+        
+        //만약 급식 데이터가 있었다면 모두 삭제하기.
+        while (meal_doc.hasChildNodes()) {
+        div.removeChild(meal_doc.firstChild);
+        }
+
+        /*
+        급식이 없는 경우
+        급식 없음을 알리고 
+        return
+        */
         if(data == '오늘은 급식 없는 날!!'){
           const li = document.createElement("li");
           const textNode = document.createTextNode(data);
           li.appendChild(textNode);
-          
           document.getElementById('meal_info').appendChild(li);
-          isWritten = true;
           return;
         }
+
+
         const mealDataParse = data.replace(/<br\/>/gm, ' ');
         const final_meal_data = mealDataParse.split(' ');
         for (let i in final_meal_data) { 
@@ -499,11 +510,11 @@
           const textNode = document.createTextNode(final_meal_data[i]);
           li.appendChild(textNode);
           
-          document.getElementById('meal_info').appendChild(li);
+          meal_doc.appendChild(li);
 
         }
-        isWritten = true;
-        }
+        
+        
 
         
 

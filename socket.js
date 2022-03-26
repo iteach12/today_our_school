@@ -232,6 +232,7 @@ const basic_request_url = 'https://open.neis.go.kr/hub/mealServiceDietInfo?';
 
 //급식 파싱 url
 let url = `${basic_request_url}&Key=${process.env.NEIS_KEY}&Type=json&pIndex=1&pSize=1&ATPT_OFCDC_SC_CODE=${gangwondo}&SD_SCHUL_CODE=${mySchool}&MLSV_YMD=${today_date}`;
+//${today_date}
 
 let school_schedule_url = 'https://open.neis.go.kr/hub/SchoolSchedule?';
 
