@@ -75,10 +75,16 @@ function getHoliday() {
   axios
     .get(holiday_url)
     .then(async (response) => {
-      const result = await response;
+      const result = await response.data.response.body.items.item;
 
-      console.log(result.data.response.body.items);
-      holiday = result.data.response.body.items;
+      
+      
+      for(let i in result){
+        if(result[i].locdate == today_date){
+          holiday = result[i].dateName;
+          console.log(holiday);
+        }
+      }
     })
     .catch((err) => {
       console.log(err);
@@ -181,7 +187,7 @@ function getForcastWeather() {
         //기온
         if (result[i].category == 'SKY') {
           console.log(
-            `관측시간 : ${result[i].baseTime} 하늘상태(SKY) : ${result[i].fcstValue}`
+            `관측시간 : ${result[i].fcstTime} 하늘상태(SKY) : ${result[i].fcstValue}`
           );
           SKY_result = result[i].fcstValue;
         }

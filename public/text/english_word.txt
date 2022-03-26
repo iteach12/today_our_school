@@ -115,7 +115,7 @@ weather*날씨
 woman*여자
 word*단어,낱말
 write*쓰다
-worng*틀린,나쁜
+wrong*틀린,나쁜
 year*해,1년
 yesterday*어제
 young*젊은

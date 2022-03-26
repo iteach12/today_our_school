@@ -284,6 +284,7 @@
       socket.on('schedule', (today_schedule, dateOfSportsDay, dateOfSwim, dateOfProjectPresentation)=>{
         //오늘의 스케쥴이 null이 아닐 때만 생성
         if(today_schedule != null)  {
+          
           const li = document.createElement("li");
           const textNode = document.createTextNode(today_schedule);
           li.appendChild(textNode);
@@ -468,17 +469,8 @@
         }
         
         //미세먼지 등급에 따라 로띠에 얼굴 변경.
-        
-        
         socket.emit('reply', '미세먼지 데이터 연결됨');
       });
-     
-
-      
-      
-      
-
-
       
       socket.on('meal', (data) => {
         const meal_doc = document.getElementById('meal_info');
