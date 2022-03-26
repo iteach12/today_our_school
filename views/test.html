@@ -141,6 +141,7 @@
             <div class="title_border align-middle"><h1 class="card_title_text align-middle">오늘 우리 학교는?</h1></div>
             <div>
               <ul class="list-disc">
+                <ul id="holiday" class="list-disc text-gray-900 text-4xl font-normal ml-8 mt-4"></ul>
                 <ul id="schedule" class="list-disc text-gray-900 text-4xl font-normal ml-8 mt-4"></ul>
                 <ul id="d_day" class="list-none text-gray-900 text-4xl font-normal ml-8 mt-16">[D-DAY]</ul>
               </ul>
@@ -396,6 +397,13 @@
       socket.on('holiday', (data)=>{
 
         const currentHolidayData = data;
+
+        if(currentHolidayData != null){
+          const li = document.createElement("li");
+          const textNode = document.createTextNode(currentHolidayData);
+          li.appendChild(textNode);
+          document.getElementById('holiday').appendChild(li);
+        }
 
 
       })
