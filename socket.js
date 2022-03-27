@@ -126,7 +126,7 @@ function getNowWeather() {
     .then(async (response) => {
       //console.log('초단기실황', response);
       const result = await response.data.response.body.items.item;
-      console.log(result);
+      // console.log(result);
       for (let i in result) {
         //기온
         if (result[i].category == 'T1H') {
@@ -256,7 +256,7 @@ const get_schedule_info = () => {
     .get(schedule_url)
     .then(async (res) => {
       const result = res.data.SchoolSchedule[1].row;
-
+      console.log(result);
       for (let i in result) {
         if (result[i].AA_YMD == today_date) {
           console.log('오늘의 행사: ', result[i].EVENT_NM);
