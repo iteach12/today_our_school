@@ -177,9 +177,18 @@
                 <lottie-player src="https://assets9.lottiefiles.com/private_files/lf30_nmraqqu5.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
               </div>
               <div>
-                <ul class="list-disc">
-                  <ul id="birth_day" class="list-none text-gray-900 text-4xl font-normal ml-2 mt-4">[생일 축하해요]</ul>
-                  <ul id="our_comment" class="list-disc text-gray-900 text-4xl font-normal ml-2 mt-4">[우리들의 한 마디]</ul>
+                <ul id="our_bir_com" class="list-disc">
+                  <ul id="birth_day" class="list-disc text-gray-900 text-4xl font-normal ml-8 mt-4">[생일]</ul>
+                  <div class="text-gray-900 text-4xl font-normal mt-4 ml-8">[우리들의 한 마디]</div>
+                  <div class="flex justify-center flex-col w-full h-5/6 items-center mt-8">
+                    
+                    <div id="comment" class="text-3xl">
+      
+                    </div>
+                    <div id="comment_author" class="text-2xl text-right mt-4 mr-8">
+      
+                    </div>
+                  </div>
                   
                 </ul>
               </div>
@@ -374,7 +383,7 @@
         if(statusPTY == '비 없음' && miseDustGrade == true){
           weather_text.textContent = '화창한 날이네요. 운동장으로 나가볼까요?';
         }else{
-          weather_text.textContent = '하늘이 뿌옇게 변했어요. 교실에서 사이좋게 놀아요.';
+          weather_text.textContent = '하늘이 뿌옇게 변했어요. 교실에서 친구들과 사이좋게 놀아요.';
         }
       });
       
@@ -506,6 +515,7 @@
           const textNode = document.createTextNode(data);
           li.appendChild(textNode);
           document.getElementById('meal_info').appendChild(li);
+          socket.emit('reply', '급식 데이터 연결됨');
           return;
         }
 
@@ -522,10 +532,10 @@
 
         }
         
-        
+        socket.emit('reply', '급식 데이터 연결됨');
 
         
-
+        
       });
 
       
@@ -665,10 +675,11 @@
       //텍스트파일 불러오기
       //영어, 사자성어, 명언
       
-      const today_english = getContentFromTxt('./text/english_word.txt');
-      const today_phrase = getContentFromTxt('./text/phrase.txt');
-      const today_quote = getContentFromTxt('./text/quote.txt');
-      const today_birthday = getBirthdayFromTxt('./text/birthday.txt');
+      const today_english = getTextFromTxt('./text/english_word.txt');
+      const today_phrase = getTextFromTxt('./text/phrase.txt');
+      const today_quote = getTextFromTxt('./text/quote.txt');
+      const today_birthday = getTextFromTxt('./text/birthday.txt');
+      const today_comment = getTextFromTxt('./text/comment.txt');
 
       //엘레멘트 가져오기
       const quote = document.querySelector('#quote'); //명언
@@ -676,7 +687,17 @@
       const gongbu = document.querySelector('#gongbu'); //영어단어
       const mean = document.querySelector('#mean'); //영단어 뜻
       const birthday = document.querySelector('#birth_day'); //생일 ul
+      const comment = document.querySelector('#comment'); //우리들의 한 마디 코멘트
+      const comment_author = document.querySelector('#comment_author'); //우리들의 한 마디 코멘트
+
+      //랜덤뽑기
+      function makeInfoRandom(array){
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
       
+
+
       //생일 넣기
       
 
@@ -688,59 +709,69 @@
           const textNode = document.createTextNode(birthday_name);
           li.appendChild(textNode);
           birthday.appendChild(li);
+        }else{
+          
+          birthday.remove();
+          
         }
       }
       //만약 오늘 생일자가 없다면
       //생일자가 없음을 안내해 줌.
-      if(!birthday.hasChildNodes()){
-          
-        console.log('자식 노드가 없습니다. 생일');
-        birthday.style.visibility = "hidden";
-      }
-
+      
+      //랜덤으로 뽑아놓기. 우리들의 한 마디, 명언.
+      makeRandomInfo();
+      
+      //우리들의 한마디 넣기
+      let myComment = makeInfoRandom(today_comment);
+      
+      
       //명언 넣기
-      quote.textContent = `${today_quote.split('*')[0]}`;
-      quote_author.textContent = `- ${today_quote.split('*')[1]}`;
+      let myQuote = makeInfoRandom(today_quote);
+      
 
-      //사자성어 먼저 넣기(영어는 30분 뒤 바뀜)
-      gongbu.textContent = `${today_phrase.split('*')[0]}`;
-      mean.textContent = `${today_phrase.split('*')[1]}`;
+      //사자성어 먼저 넣기(영어는 15초 뒤 바뀜)
+      let myPhrase = makeInfoRandom(today_phrase);
+      let myEnglish = makeInfoRandom(today_english);
+      gongbu.textContent = `${myPhrase.split('*')[0]}`;
+      mean.textContent = `${myPhrase.split('*')[1]}`;
 
       let isPhrase = true;
-      function makeTodayStudyInfo(){
+      function makeTodayInfo(){
         if(isPhrase){
-          gongbu.textContent = `${today_english.split('*')[0]}`;
-          mean.textContent = `${today_english.split('*')[1]}`;
+          gongbu.textContent = `${myEnglish.split('*')[0]}`;
+          mean.textContent = `${myEnglish.split('*')[1]}`;
           isPhrase = false;
         }else{
-          gongbu.textContent = `${today_phrase.split('*')[0]}`;
-          mean.textContent = `${today_phrase.split('*')[1]}`;
+          gongbu.textContent = `${myPhrase.split('*')[0]}`;
+          mean.textContent = `${myPhrase.split('*')[1]}`;
           isPhrase = true;
       }
       }
-      function studyInfotimerInit(){
-          setInterval(makeTodayStudyInfo, 15000);
+
+      function makeRandomInfo(){
+        //우리들의 한 마디 넣기
+        const myComment = makeInfoRandom(today_comment);
+        comment_author.textContent = `- ${myComment.split('*')[0]}`;
+        comment.textContent = `${myComment.split('*')[1]}`;
+        
+        //명언 넣기
+        const myQuote = makeInfoRandom(today_quote);
+        quote.textContent = `${myQuote.split('*')[0]}`;
+        quote_author.textContent = `- ${myQuote.split('*')[1]}`;
+
       }
-      studyInfotimerInit();
+      function todayInfotimerInit(){
+        
+        setInterval(makeTodayInfo, 15000);
+        setInterval(makeRandomInfo, 15000);
+      }
+      todayInfotimerInit();
 
      
       
       //파일에서 데이터 랜덤으로 뽑아내기
-      function getContentFromTxt(url){
-      let content = null;
-      let result_array;
-      let xmlhttp = new XMLHttpRequest();
-      xmlhttp.open('GET', url, false);
-      xmlhttp.send();
-      //파일 로드 성공 시 파일에서 읽은 텍스트를 content에 담음
-      if (xmlhttp.status == 200) {
-        content = xmlhttp.responseText;
-        result_array = content.split('\n');
-      }
-      return result_array[Math.floor(Math.random() * result_array.length)];
-      }
-
-      function getBirthdayFromTxt(url){
+      
+      function getTextFromTxt(url){
         let content = null;
         let reault_array;
         let xmlhttp = new XMLHttpRequest();

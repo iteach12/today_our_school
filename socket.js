@@ -77,10 +77,8 @@ function getHoliday() {
     .then(async (response) => {
       const result = await response.data.response.body.items.item;
 
-      
-      
-      for(let i in result){
-        if(result[i].locdate == today_date){
+      for (let i in result) {
+        if (result[i].locdate == today_date) {
           holiday = result[i].dateName;
           console.log(holiday);
         }
@@ -380,6 +378,7 @@ module.exports = (server) => {
       socket.emit('PTY', PTY_result);
       socket.emit('REH', REH_result);
       socket.emit('SKY', SKY_result);
+      socket.emit('meal', neis_meal_info);
     }, 1000 * 60 * 10); //15분 단위 반복
   });
 };
