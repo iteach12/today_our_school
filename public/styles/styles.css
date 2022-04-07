@@ -544,6 +544,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-top: 4rem;
 }
 
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
 .mr-8 {
   margin-right: 2rem;
 }
@@ -554,6 +558,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .table {
   display: table;
+}
+
+.hidden {
+  display: none;
 }
 
 .h-full {
