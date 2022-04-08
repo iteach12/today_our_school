@@ -568,10 +568,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: 60%;
 }
 
-.h-44 {
-  height: 11rem;
-}
-
 .h-1\/2 {
   height: 50%;
 }
@@ -610,10 +606,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .w-auto {
   width: auto;
-}
-
-.w-44 {
-  width: 11rem;
 }
 
 .w-4\/5 {

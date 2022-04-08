@@ -56,27 +56,28 @@ function makeParams(str, value) {
   return result;
 }
 
-//국경일 특일 정보 url
+//기념일 특일 정보 url
 let holiday_base_url =
-  'http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo';
+  'http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getAnniversaryInfo';
 
-//특일정보 담기
+//기념일정보 담기
 let holiday;
 
-//특일 정보는 DECODING_KEY가 사용됨.
+//기념일 정보는 DECODING_KEY가 사용됨.
 let holiday_url = initApiUrl(
   holiday_base_url,
   'ServiceKey',
   process.env.DECODING_KEY
 );
 holiday_url += makeParams('solYear', year);
+holiday_url += makeParams('solMonth', month);
 holiday_url += makeParams('_type', 'json');
 function getHoliday() {
   axios
     .get(holiday_url)
     .then(async (response) => {
       const result = await response.data.response.body.items.item;
-
+      console.log(result);
       for (let i in result) {
         if (result[i].locdate == today_date) {
           holiday = result[i].dateName;
@@ -254,7 +255,7 @@ const get_schedule_info = () => {
     .get(schedule_url)
     .then(async (res) => {
       const result = res.data.SchoolSchedule[1].row;
-      console.log(result);
+
       for (let i in result) {
         if (result[i].AA_YMD == today_date) {
           console.log('오늘의 행사: ', result[i].EVENT_NM);
@@ -369,9 +370,12 @@ module.exports = (server) => {
       //미세먼지 정보 가져오기
       getNowDust();
 
+      //급식 정보 가져오기
       get_meal_info();
 
-      getNowDust();
+      //기념일 정보 가져오기
+      getHoliday();
+
       //소켓 전송하기
       socket.emit('dust', dust_result);
       socket.emit('T1H', T1H_result);
@@ -379,6 +383,7 @@ module.exports = (server) => {
       socket.emit('REH', REH_result);
       socket.emit('SKY', SKY_result);
       socket.emit('meal', neis_meal_info);
+      socket.emit('holiday', holiday);
     }, 1000 * 60 * 10); //15분 단위 반복
   });
 };
