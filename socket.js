@@ -236,7 +236,7 @@ const mySchool = '7891019';
 const basic_request_url = 'https://open.neis.go.kr/hub/mealServiceDietInfo?';
 
 //급식 파싱 url
-    // socket.emit('holiday', holiday);
+// socket.emit('holiday', holiday);
 let url = `${basic_request_url}&Key=${process.env.NEIS_KEY}&Type=json&pIndex=1&pSize=1&ATPT_OFCDC_SC_CODE=${gangwondo}&SD_SCHUL_CODE=${mySchool}&MLSV_YMD=${today_date}`;
 //${today_date}
 
@@ -295,11 +295,12 @@ function parsing_json(obj) {
   } else {
     let meal_data_str = obj.data.mealServiceDietInfo[1].row[0].DDISH_NM;
     //숫자 제거 정규식
-    meal_data_str = meal_data_str.replace(/[0-9]/g, '');
+    // meal_data_str = meal_data_str.replace(/[0-9]/g, '');
 
     //마침표 제거 정규식
     //마침표가 특수문자라 \역슬래시를 넣어줘야 했음.
-    meal_data_str = meal_data_str.replace(/\./g, '');
+    // meal_data_str = meal_data_str.replace(/\./g, '');
+    meal_data_str = meal_data_str.replace(/\([^)]*\)/gm, '');
     return meal_data_str;
   }
 }
