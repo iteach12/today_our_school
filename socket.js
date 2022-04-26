@@ -236,6 +236,7 @@ const mySchool = '7891019';
 const basic_request_url = 'https://open.neis.go.kr/hub/mealServiceDietInfo?';
 
 //급식 파싱 url
+    // socket.emit('holiday', holiday);
 let url = `${basic_request_url}&Key=${process.env.NEIS_KEY}&Type=json&pIndex=1&pSize=1&ATPT_OFCDC_SC_CODE=${gangwondo}&SD_SCHUL_CODE=${mySchool}&MLSV_YMD=${today_date}`;
 //${today_date}
 
@@ -334,7 +335,7 @@ module.exports = (server) => {
 
     socket.emit('meal', neis_meal_info);
     socket.emit('dust', dust_result);
-    socket.emit('holiday', holiday);
+    // socket.emit('holiday', holiday);
     socket.emit('T1H', T1H_result);
     socket.emit('PTY', PTY_result);
     socket.emit('REH', REH_result);
